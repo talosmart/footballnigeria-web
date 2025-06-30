@@ -1,0 +1,42 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+export default function BreadCrumb() {
+  const pathname = usePathname();
+
+  const segments = pathname.split("/").filter((path) => path !== "");
+
+  const breadCrumbs = segments.map((crumb, i) => {
+    const displayText = crumb.split("-").join(" ");
+    const path = "/" + segments.slice(0, i + 1).join("/");
+
+    return {
+      displayText,
+      path,
+    };
+  });
+
+  return (
+    <div className="flex gap-x-2">
+      {breadCrumbs.map((crumb, i) => (
+        <p
+          key={i}
+          className="last:text-primary flex items-center gap-x-2 text-sm font-medium text-[#B3B3B3] capitalize"
+        >
+          <Link href={crumb.path}>{crumb.displayText}</Link>
+          {i < segments.length - 1 && (
+            <Image
+              src="/chevron-stroke.png"
+              alt=""
+              width={7.78}
+              height={12.73}
+            />
+          )}
+        </p>
+      ))}
+    </div>
+  );
+}
