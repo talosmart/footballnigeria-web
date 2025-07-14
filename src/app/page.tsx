@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 
 import Slider from "@/components/ui/slider";
@@ -5,19 +7,38 @@ import SubTitle from "@/components/ui/subtitle";
 import MobileFooterMenu from "@/components/layout/mobile-footer-menu";
 import { NewsCard, NewsCardLandscape } from "@/components/ui/card-news";
 
-import { getCategories, getPosts } from "@/services/blog";
+import { categoriesData, getCategories, getPosts, samplePosts } from "@/services/blog";
 import { Categories, Post } from "@/types/blog.types";
 import formatDate from "@/utils/format-date";
+import { useEffect } from "react";
+import { useUserStore } from "@/store/userStore";
 
-export default async function Home() {
-  const categories = (await getCategories()) as Categories;
-  const posts = (await getPosts()) as Post[];
+export default function Home() {
+  // const categories = (await getCategories()) as Categories;
+    const { hydrated } = useUserStore();
+   useEffect(() => {
+    if (!hydrated) return;
 
-  const trendingPosts = categories
+    const getData = async () => {
+      try {
+        const res = (await getCategories()) as Categories;;
+        console.log('Data:', res);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getData();
+  }, [hydrated]);
+  // const posts = (await getPosts()) as Post[];
+
+  // console.log(categories, 'categories')
+
+  const trendingPosts = categoriesData
     .filter((category) => category.count > 0)
     .slice(0, 6)
     .map((category) => {
-      const post = posts.find((post) => post.categories.includes(category.id));
+      const post = samplePosts.find((post) => post.categories.includes(category.id));
       return post ? { post, category } : null;
     })
     .filter(Boolean)
@@ -55,10 +76,10 @@ export default async function Home() {
           ))}
         </section>
 
-        {categories
+        {categoriesData
           .filter((category) => category.count > 0)
           .map((category) => {
-            const postsInCategory = posts.filter((post) =>
+            const postsInCategory = samplePosts.filter((post) =>
               post.categories.includes(category.id),
             );
 

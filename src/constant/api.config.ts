@@ -1,8 +1,8 @@
-"use server";
+import { useUserStore } from "@/store/userStore";
 
 export type Method = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
 
-const BASE_URL = process.env.BASE_URL || "";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 // Base fetch utility
 const fetchFromApi = async <T>(
@@ -31,8 +31,9 @@ const fetchFromApi = async <T>(
   try {
     const res = await fetch(`${BASE_URL}${url}`, options);
 
-    if (res.status === 204) {
-      return { status: "success" };
+    if (res.status === 200) {
+      const response = await res.json();
+      return { response };
     }
 
     if (!res.ok) {
@@ -54,18 +55,22 @@ export const ApiRequest = async <T>(
   return await fetchFromApi<T>(url, method, data);
 };
 
-// // Authenticated API request
-// export const AuthorizedApiRequest = async <T>(
-//   url: string,
-//   method: Method = "GET",
-//   data?: T,
-// ) => {
-//   const { token } = await verifySession();
+// Authenticated API request
+export const AuthorizedApiRequest = async <T>(
+  url: string,
+  method: Method = "GET",
+  data?: T,
+) => {
+  const token = useUserStore.getState().token ?? undefined;
 
-//   return await fetchFromApi<T>(url, method, data, token);
-// };
+  if(!token){
+    return console.log('token')
+  }
 
-// Error handler
+  return await fetchFromApi<T>(url, method, data, token);
+};
+
+
 export const handleApiError = async (error: unknown) => {
   if (
     error instanceof TypeError &&
