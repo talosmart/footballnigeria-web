@@ -10,6 +10,8 @@ export const NewsCardLandscape = ({
   title: string;
   path: string;
 }) => {
+
+  
   return (
     <article
       className={`$flex-row flex rounded-lg bg-white p-1 lg:items-center`}
@@ -18,7 +20,7 @@ export const NewsCardLandscape = ({
       <div
         className={`relative w-1/2 shrink-0 overflow-hidden rounded-lg lg:min-h-[349px]`}
       >
-        <Image src={media} alt="news image" fill className="z-0 object-cover" />
+        {media && <Image src={media} alt="news image" fill className="z-0 object-cover" />}
         <div className="absolute top-0 left-0 z-10 h-full w-full bg-radial from-[#00000000] to-[#00875150]" />
       </div>
       <section className={`font-lato p-2.5 lg:p-6`}>
@@ -61,6 +63,11 @@ export const NewsCard = ({
   noReadMore?: boolean;
   video?: boolean;
 }) => {
+  console.log(media, 'media')
+  console.log(title, 'media')
+
+  // const formattedImage = `${process.env.NEXT_PUBLIC_API_URL}public/storage/${media}`
+  
   return (
     <article
       className="font-lato relative flex items-center overflow-hidden rounded-lg bg-white p-1 lg:flex-col"
@@ -88,7 +95,8 @@ export const NewsCard = ({
       </div>
       <section className="grid w-1/2 gap-y-3.5 px-3.5 py-4 lg:w-full">
         <h3 className="text-xs font-semibold lg:text-base lg:leading-5">
-          {title.length > 16 ? `${title.substring(0, 45)}...` : title}
+          {/* {title.length > 16 ? `${title.substring(0, 45)}...` : title} */}
+          {title}
 
           <Link href={path} className="absolute inset-0 h-full w-full" />
         </h3>

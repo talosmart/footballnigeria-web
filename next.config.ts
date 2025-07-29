@@ -6,9 +6,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "blog.footballnigeria.com",
-        port: "",
         pathname: "/**",
-        search: "",
+      },
+      {
+        protocol: "https",
+        hostname: "football.ogitechconsults.ng",
+        pathname: "/**",
       },
     ],
   },

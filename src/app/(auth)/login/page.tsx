@@ -14,6 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter()
 
@@ -27,7 +28,7 @@ export default function Login() {
 
     try {
       const res = await ApiRequest<{ email: string; password: string }>(
-        'login',
+        'auth/login',
         'POST',
         { email, password }
       );
@@ -45,6 +46,13 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+   const handleShowPassword = () => {
+     
+        setShowPassword((prev) => !prev);
+      
+  
+    }
 
   return (
     <form
@@ -73,18 +81,19 @@ export default function Login() {
             <input
               name="password"
               id="password"
-              type="password"
+               type={showPassword ? 'text' : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="font-lato border-border-default w-full rounded-lg border bg-white px-3 py-4 text-sm text-[#828282]"
               required
             />
             <Image
+              onClick={handleShowPassword}
               src="/not-visible.svg"
               alt=""
               width={18}
               height={18}
-              className="absolute top-1/2 right-3 -translate-y-1/2"
+              className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
             />
           </div>
         </div>

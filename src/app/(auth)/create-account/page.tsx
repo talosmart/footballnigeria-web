@@ -47,7 +47,7 @@ export default function Register() {
     }
 
     try {
-      const res = await ApiRequest('register', 'POST', {
+      const res = await ApiRequest('auth/register', 'POST', {
         full_name: formData.full_name,
         email: formData.email,
         phone_number: formData.phone,

@@ -1,11 +1,14 @@
 import { ApiRequest, AuthorizedApiRequest } from "@/constant/api.config";
 
 
-export const getPosts = async () => console.log(`/wp-json/wp/v2/posts`);
+// export const getPosts = async () => console.log(`/wp-json/wp/v2/posts`);
 
 export const getPost = async (id: number) =>
   console.log(`/wp-json/wp/v2/posts/${id}`);
-export const getCategories = async () => await AuthorizedApiRequest(`blog/category/get-category`);
+export const getCategories = async () => await AuthorizedApiRequest(`blog/category`);
+export const getPosts = async () => await AuthorizedApiRequest(`blog/list`);
+export const getPostList = async () => await AuthorizedApiRequest(`fans/post/list`);
+export const getTopics = async () => await AuthorizedApiRequest(`fans/topics/list`);
 
 // export const getPosts = async () => await ApiRequest(`/wp-json/wp/v2/posts`);
 
