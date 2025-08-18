@@ -11,7 +11,7 @@ export default function BreadCrumb() {
 
   const breadCrumbs = segments.map((crumb, i) => {
     const displayText = crumb.split("-").join(" ");
-    const path = "/" + segments.slice(0, i + 1).join("/");
+    const path = i === 0 ? "/" : "/" + segments.slice(0, i + 1).join("/"); // 👈 first always "/"
 
     return {
       displayText,

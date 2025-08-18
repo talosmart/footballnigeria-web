@@ -8,49 +8,30 @@ import MobileFooterMenu from "@/components/layout/mobile-footer-menu";
 import { NewsCard, NewsCardLandscape } from "@/components/ui/card-news";
 
 import { categoriesData, getCategories, getPosts, samplePosts } from "@/services/blog";
-import { Categories, Post } from "@/types/blog.types";
 import formatDate from "@/utils/format-date";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import SpinnerLoader from "@/components/SpinnerLoader";
+import { PredictionCard } from "@/components/ui/card-prediction";
+import MatchPreviewCard from "@/components/ui/card-match-preview";
+import Image from "next/image";
+import { useFootballStore } from "../store/footballStore";
+import { fetchFootballData } from "@/components/methods";
+import { LiveFixtures } from "@/components/ui/live-fixtures";
+import TrendyPost from "@/components/ui/TrendyPost";
 
 export default function Home() {
-  const [categories, setCategories] = useState([]);
-  const [posts, setPosts] = useState([]);
-   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState<string | null>(null);
-  // const categories = (await getCategories()) as Categories;
-    const { hydrated } = useUserStore();
-   useEffect(() => {
-    if (!hydrated) return;
+ 
+const { hydrated } = useUserStore();
+  const { categories, posts, liveFixtures, loading, error } =
+    useFootballStore();
 
-    const getCategoriesData = async () => {
-      setLoading(true)
-      try {
-        const res = (await getCategories());
-       
-       setCategories(res?.response?.data);
-       
-      }  catch (err) {
-        console.error('Failed to fetch post:', err);
-        setError('Failed to load post');
-      }finally {
-        setLoading(false);
-      }
-    };
-    const getPostsData = async () => {
-      try {
-        const res = (await getPosts());
-       setPosts(res?.response?.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-
-    getCategoriesData();
-    getPostsData();
+     useEffect(() => {
+    if (hydrated) {
+      fetchFootballData();
+    }
   }, [hydrated]);
+
   // const posts = (await getPosts()) as Post[];
 
   // const trendingPosts = categories
@@ -81,40 +62,30 @@ export default function Home() {
   return (
     <>
       <main className="mx-auto grid max-w-[1076px] gap-y-12 px-2.5 py-5 lg:py-[6.25rem]">
-        <div className="lg:hidden">
-          <Slider />
+        <div className="">
+          <Slider posts={posts.slice(0, 5)} /> 
         </div>
 
         {/* Trending Posts */}
-        <section className="grid items-start gap-5 lg:grid-cols-3">
-          <div className="lg:col-span-3">
-            {categories[0] && (
-              <NewsCardLandscape
-                media={categories?.[0].posts?.[0].featured_image}
-                // media={categories[0].post.featured_media_src_url}
-                title={categories?.[0].posts?.[0].title}
-                path={`/blogs/${categories?.[0].slug}/${categories[0].posts?.[0].slug}`}
-                // path={`/blogs/${categories[0].category.slug}/${trendingPosts[0].post.slug}`}
-              />
-            )}
-          </div>
-
-          {categories
-    ?.filter((category) => category.posts_count > 0).map((post, index) => {
-            return <NewsCard
-              key={index}
-              noReadMore
-              media={post?.posts?.[0]?.featured_image as string}
-              title={post?.posts?.[0]?.title as string}
-              // path={`/blogs/${post?.category.slug}/${post?.post.slug}`}
-              path={`/blogs/${post?.slug}/${post?.posts?.[0]?.slug}`}
-              description={post?.posts?.[0]?.excerpt as string}
-              // description={post?.post.excerpt.rendered as string}
-              date={formatDate(post?.posts?.[0]?.published_at as string)}
-            />
-        })}
-        </section>
-
+       <TrendyPost categories={categories} homePage={true} />
+          <SubTitle title={`Live on Scores`} />
+      <section className="relative w-full">
+  <div className="flex gap-x-4 lg:gap-x-16 overflow-x-scroll scrollbar-none scroll-smooth snap-x snap-mandatory w-[40rem] lg:w-[55rem] ">
+    {liveFixtures?.map((fixture) => (
+      <div
+        key={fixture.matchInfo.id}
+        className="snap-start shrink-0 w-[300px]" // fixed width for sliding cards
+      >
+        <LiveFixtures
+          path={`/football/${fixture.matchInfo.competition.name.replace(/\s+/g, "-")}`}
+          fixture={fixture.matchInfo}
+        />
+      </div>
+    ))}
+  </div>
+</section>
+       
+      {/* <MatchPreviewCard /> */}
         {categories
           ?.filter((category) => category?.posts_count > 0)
           ?.map((category) => {
@@ -126,7 +97,7 @@ export default function Home() {
               <section key={category.id} className="grid gap-y-5 lg:gap-y-10">
                 <SubTitle title={category.name} />
                 <div className="grid gap-5 lg:grid-cols-3">
-                  {category.posts?.map((post, index) => (
+                  {category.posts?.slice(0,3).map((post, index) => (
                     <NewsCard
                       key={index}
                       media={post.featured_image}
@@ -136,15 +107,33 @@ export default function Home() {
                   ))}
                 </div>
 
-                {category.posts_count > 6 && (
+              
                   <MoreButton
-                    path={`/news?category=${category.id}`}
+                    path={`/football/${category.name.replace(/\s+/g, '-')}`}
                     title={`More ${category.name}`}
                   />
-                )}
+                  {/* <MoreButton
+                    path={`/news?category=${category.id}`}
+                    title={`More ${category.name}`}
+                  /> */}
+              
               </section>
             );
           })}
+            <div className="w-[60%] mx-auto">
+          <PredictionCard />
+        </div>
+          <section className="relative h-[241px] overflow-hidden rounded-2xl bg-blend-overlay lg:h-[457px]">
+                  <Image
+                    src="/play.svg"
+                    alt=""
+                    width={65}
+                    height={65}
+                    className="absolute top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2"
+                  />
+                  <div className="absolute top-0 left-0 z-40 h-full w-full bg-[#00000033]" />
+                  <Image src="/naija-flag.jpg" alt="" fill className="object-cover" />
+                </section>
         {/* {categories
           ?.filter((category) => category.posts_count > 0)
           ?.map((category) => {

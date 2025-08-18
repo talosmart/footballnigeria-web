@@ -63,8 +63,6 @@ export const NewsCard = ({
   noReadMore?: boolean;
   video?: boolean;
 }) => {
-  console.log(media, 'media')
-  console.log(title, 'media')
 
   // const formattedImage = `${process.env.NEXT_PUBLIC_API_URL}public/storage/${media}`
   

@@ -1,54 +1,121 @@
+"use client";
+
 import Image from "next/image";
+import SubTitle from "./subtitle";
+import { fifaToIso2 } from "../methods";
+import { addMinutes, format, parseISO } from "date-fns";
 
-export default function MatchPreviewCard() {
+// ----------------------
+// Types
+// ----------------------
+interface Contestant {
+  code: string;
+  name: string;
+}
+
+interface MatchInfo {
+  id: string;
+  contestant: Contestant[];
+  time: string; // e.g., "19:00:00Z"
+}
+
+interface Fixture {
+  matchInfo: MatchInfo;
+}
+
+interface MatchPreviewCardProps {
+  filteredfixtures: Fixture[];
+}
+
+// ----------------------
+// Main Card Component
+// ----------------------
+export default function MatchPreviewCard({ filteredfixtures }: MatchPreviewCardProps) {
   return (
-    <section className="font-lato rounded-md bg-white px-2.5 py-5">
-      <div className="mb-2.5 leading-[18px] font-medium">
-        <p className="text-xl">Saturday</p>
-        <p className="text-text-secondary text-sm tracking-[0.2px]">
-          Last updated: 26 November, 3:01pm
-        </p>
-      </div>
+    <section className="font-lato rounded-md bg-white px-3 py-5 shadow-sm">
+      <SubTitle title="Today's Matches / Next Match" />
 
-      <h3 className="bg-primary font-bai-jamjuree px-6 py-2 font-bold text-white uppercase">
-        Match Preview
-      </h3>
-
-      <ul className="font-inter">
-        <MatchPreview />
-        <MatchPreview />
-        <MatchPreview />
-        <MatchPreview />
-        <MatchPreview />
-        <MatchPreview />
-        <MatchPreview />
-        <MatchPreview />
+      <ul className="mt-3 divide-y divide-gray-100">
+        {filteredfixtures?.map((fixture) => (
+          <MatchPreview
+            key={fixture.matchInfo.id}
+            contestants={fixture.matchInfo.contestant}
+            time={fixture.matchInfo.time}
+          />
+        ))}
       </ul>
     </section>
   );
 }
 
-const MatchPreview = () => {
+// ----------------------
+// Match Preview Row
+// ----------------------
+interface MatchPreviewProps {
+  contestants: Contestant[];
+  time: string;
+}
+
+const MatchPreview = ({ contestants, time }: MatchPreviewProps) => {
+  const [home, away] = contestants ?? [];
+
+  // Safe fallback codes
+  const homeCode = home?.code ?? "xx";
+  const awayCode = away?.code ?? "xx";
+
+  // Map FIFA code → ISO2 for flagcdn
+   const homeCountryCode = fifaToIso2[homeCode];
+  const awayCountryCode = fifaToIso2[awayCode];
+
+  const homeFlag = homeCountryCode ? `https://flagcdn.com/w40/${homeCountryCode}.png` : null;
+  const awayFlag = awayCountryCode ? `https://flagcdn.com/w40/${awayCountryCode}.png` : null;
+
+  console.log(awayCountryCode, 'awayCountryCode')
+  console.log(homeCountryCode, 'homeCountryCode')
+
+  // ----------------------
+  // Time Formatting
+  // ----------------------
+  let formattedTime = "TBD";
+  try {
+    // Parse as ISO date (force a valid date string)
+    const parsedDate = parseISO(`1970-01-01T${time}`);
+    // Adjust timezone (e.g., IST = +330 min) — can make dynamic later
+    const adjustedDate = addMinutes(parsedDate, 330);
+    formattedTime = format(adjustedDate, "h:mm a");
+  } catch {
+    // fallback handled by formattedTime = "TBD"
+  }
+
   return (
-    <li className="flex even:bg-[#FAFAFA]">
-      <div className="border-r-border-default flex shrink-0 flex-col items-center justify-center border-r px-3.5 py-1.5">
-        <Image src="/epl.svg" alt="" width={13.87} height={17} />
-        <span className="text-text-secondary text-[10px] leading-[18px] font-semibold tracking-[0.2px]">
-          ENG
-        </span>
+    <li className="flex items-center justify-center py-2 text-xs even:bg-gray-50">
+      {/* Home */}
+      <div className="flex flex-1 items-center justify-end gap-x-2 pr-2">
+        <span className="truncate font-medium text-gray-800">{home?.name ?? "Unknown"}</span>
+       {homeFlag &&  <Image
+          src={homeFlag}
+          alt={`${home?.name ?? "Unknown"} flag`}
+          width={24}
+          height={24}
+          className="rounded"
+        />}
       </div>
-      <div className="flex grow items-center justify-center text-xs tracking-[0.2px]">
-        <div className="flex grow items-center justify-end gap-x-1 px-1">
-          <span className="font-lato">Man United</span>
-          <Image src="/club-1.svg" alt="" width={24} height={24.32} />
-        </div>
-        <div className="text-neutral shrink-0 rounded-[2px] bg-[#D9EDE5] px-1 text-xs leading-[18px] font-semibold tracking-[0.2px]">
-          3 - 4
-        </div>
-        <div className="flex grow items-center gap-x-1 px-1">
-          <Image src="/club-2.svg" alt="" width={24} height={24.32} />
-          <span className="font-lato">Chelsea</span>
-        </div>
+
+      {/* Time */}
+      <div className="mx-2 shrink-0 rounded bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700">
+        {formattedTime}
+      </div>
+
+      {/* Away */}
+      <div className="flex flex-1 items-center gap-x-2 pl-2">
+        {awayFlag && <Image
+          src={awayFlag}
+          alt={`${away?.name ?? "Unknown"} flag`}
+          width={24}
+          height={24}
+          className="rounded"
+        />}
+        <span className="truncate font-medium text-gray-800">{away?.name ?? "Unknown"}</span>
       </div>
     </li>
   );

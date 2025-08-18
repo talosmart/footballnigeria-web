@@ -62,7 +62,6 @@ export const AuthorizedApiRequest = async <T>(
   data?: T,
 ) => {
   const token = useUserStore.getState().token ?? undefined;
-
   if(!token){
     return console.log('token')
   }
@@ -97,3 +96,35 @@ export const handleApiError = async (error: unknown) => {
     message: "Something went wrong. Please try again.",
   };
 };
+
+export const getCalendar = async <T>(): Promise<T> => {
+  const res = await fetch("/api/calendar", { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch calendar");
+  }
+
+  return (await res.json()) as T;
+};
+
+export const getFixtures = async <T>(id: string): Promise<T> => {
+  const res = await fetch(`/api/fixtures?id=${id}`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch fixtures");
+  }
+
+  return (await res.json()) as T;
+};
+
+export const getLiveFixtures = async <T>(id: string): Promise<T> => {
+  console.log(id, 'id')
+  const res = await fetch(`/api/live-fixtures?id=${id}`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch fixtures");
+  }
+
+  return (await res.json()) as T;
+};
+

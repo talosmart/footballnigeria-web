@@ -121,11 +121,11 @@ const LeagueTableRowWithForm = ({
   );
 };
 
-export function NPFLLeagueTable() {
+export function NPFLLeagueTable({tournamentName}) {
   return (
     <section className="font-lato overflow-hidden rounded-t-2xl bg-white">
       <h3 className="bg-primary py-2.5 text-center text-sm font-extrabold text-[#f3f3f3]">
-        NPFL LEAGUE TABLE
+        {`${tournamentName} TABLE`}
       </h3>
       <div className="text-neutral flex items-center justify-between bg-[#D9EDE5] px-3.5 py-[7.5px] font-bold">
         <h4 className="px-2.5">Team</h4>
