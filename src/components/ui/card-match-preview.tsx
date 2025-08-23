@@ -70,9 +70,6 @@ const MatchPreview = ({ contestants, time }: MatchPreviewProps) => {
   const homeFlag = homeCountryCode ? `https://flagcdn.com/w40/${homeCountryCode}.png` : null;
   const awayFlag = awayCountryCode ? `https://flagcdn.com/w40/${awayCountryCode}.png` : null;
 
-  console.log(awayCountryCode, 'awayCountryCode')
-  console.log(homeCountryCode, 'homeCountryCode')
-
   // ----------------------
   // Time Formatting
   // ----------------------

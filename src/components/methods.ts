@@ -1,5 +1,5 @@
 // services/footballService.ts
-import { getCalendar, getFixtures, getLiveFixtures } from "@/constant/api.config";
+import { getCalendar, getFixtures, getLiveFixtures, getStandings } from "@/constant/api.config";
 import { getCategories, getPosts } from "@/services/blog";
 import { useFootballStore } from "@/store/footballStore";
 
@@ -10,6 +10,7 @@ export async function fetchFootballData() {
     setCalendar,
     setFixtures,
     setLiveFixtures,
+    setStandings,
     setLoading,
     setError,
   } = useFootballStore.getState();
@@ -28,8 +29,6 @@ export async function fetchFootballData() {
     const posts = postsRes?.response?.data ?? [];
     const calendar = calendarRes?.competition ?? [];
 
-    console.log(categoriesRes, 'categoriesRes');
-
     setCategories(categories);
     setPosts(posts);
     setCalendar(calendar);
@@ -40,7 +39,7 @@ export async function fetchFootballData() {
       .filter(Boolean);
 
     if (ids.length > 0) {
-      const [fixturesResults, liveFixturesResults] = await Promise.all([
+      const [fixturesResults, liveFixturesResults, standings] = await Promise.all([
         Promise.all(
           ids.map(async (id: string) => {
             try {
@@ -61,13 +60,25 @@ export async function fetchFootballData() {
             }
           })
         ),
+        Promise.all(
+          ids.map(async (id: string) => {
+            try {
+              return await getStandings(id);
+            } catch (e) {
+              console.error(`Failed fetching standings for id ${id}`, e);
+              return { match: [] };
+            }
+          })
+        ),
       ]);
 
       setFixtures(fixturesResults.flatMap((f) => f?.match ?? []));
       setLiveFixtures(liveFixturesResults.flatMap((f) => f?.match ?? []));
+      setStandings(standings ?? []);
     } else {
       setFixtures([]);
       setLiveFixtures([]);
+      setStandings([]);
     }
 
     setError(null);
@@ -79,7 +90,7 @@ export async function fetchFootballData() {
   }
 }
 
-export const getTournamentNavLists = (tournament: string) => [
+export const getCountryNavLists = (tournament: string) => [
   { title: "news", path: `/football/${tournament}/news` },
   { title: "summary", path: `/football/${tournament}/summary` },
   { title: "matches", path: `/football/${tournament}/matches` },
@@ -89,6 +100,13 @@ export const getTournamentNavLists = (tournament: string) => [
   { title: "teams", path: `/football/${tournament}/all-teams` },
   { title: "leagues & cup", path: `/football/${tournament}/leagues-&-cups` },
   { title: "venue", path: `/football/${tournament}/venue` },
+];
+
+export const getTournamentNavLists = (tournament: string) => [
+  { title: "news", path: `/football/${tournament}/news` },
+  { title: "Scores & Fixtures", path: `/football/${tournament}/matches` },
+  { title: "Table", path: `/football/${tournament}/table` },
+  { title: "stats", path: `/football/${tournament}/statistics` }
 ];
 
 

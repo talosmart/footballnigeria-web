@@ -4,15 +4,17 @@ import Image from "next/image";
 import SwitchView from "./tab-switch-view";
 import { useState } from "react";
 import GreenHeader from "./green-header";
+import { fifaToIso2 } from "../methods";
 
-export default function LeagueTable() {
+export default function LeagueTable({tournamentName, data}) {
   return (
     <section className="font-lato overflow-hidden rounded-t-2xl bg-white">
-      <GreenHeader heading="league table" className="mb-0 text-center" />
-      <LeagueTableHeader title="Team" />
+     
+      <GreenHeader heading={tournamentName} className="mb-0 text-center" />
+      <LeagueTableHeader title={data?.groupName} />
       <ul>
-        {new Array(11).fill("").map((_, i) => (
-          <LeagueTableRow key={i} i={i} active={[4, 7]} />
+        {data?.ranking?.map((rank, i) => (
+          <LeagueTableRow key={rank?.rankId} i={i} rank={rank} active={[4, 7]} tournamentName={tournamentName} />
         ))}
       </ul>
     </section>
@@ -121,7 +123,7 @@ const LeagueTableRowWithForm = ({
   );
 };
 
-export function NPFLLeagueTable({tournamentName}) {
+export function NPFLLeagueTable({tournamentName, filteredStandings}) {
   return (
     <section className="font-lato overflow-hidden rounded-t-2xl bg-white">
       <h3 className="bg-primary py-2.5 text-center text-sm font-extrabold text-[#f3f3f3]">
@@ -207,38 +209,43 @@ function LeagueTableHeader({ title }: { title: string }) {
   );
 }
 
-const LeagueTableRow = ({ i, active }: { i: number; active: number[] }) => {
+const LeagueTableRow = ({ i, rank, active, tournamentName }: { i: number; rank: object; active: number[]; tournamentName: string }) => {
+    // Safe fallback codes
+    const contestantCode = rank?.contestantCode ?? "xx";
+  
+    // Map FIFA code → ISO2 for flagcdn
+     const countryCode = fifaToIso2[contestantCode];
+  
+    const contestantFlag = countryCode ? `https://flagcdn.com/w40/${countryCode}.png` : null;
   return (
     <li
-      className={`border-b-border-default font-lato flex items-center justify-between border-b px-1 py-2.5 text-sm text-black ${
-        active.includes(i) ? "bg-[#E6E6E6]" : ""
-      }`}
+      className={`border-b-border-default hover:bg-[#E6E6E6] font-lato flex items-center justify-between border-b px-1 py-2.5 text-sm text-black`}
     >
       <div className="flex h-8 w-8 items-center justify-center">
         <p className="font-bold">{i + 1}</p>
       </div>
       <div className="flex grow items-center gap-x-2.5 px-2.5">
-        <Image src="/club-1.svg" alt="" width={24} height={24.32} />
-        <span>Man United</span>
+        {tournamentName !== 'NPFL' && <Image src={contestantFlag} alt="" width={24} height={24.32} />}
+        <span>{rank?.contestantClubName}</span>
       </div>
       <div className="flex gap-x-1 px-3 lg:gap-x-10">
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>56</p>
+          <p>{rank?.matchesPlayed}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>6</p>
+          <p>{rank?.matchesWon}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>3</p>
+          <p>{rank?.matchesDrawn}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>0</p>
+          <p>{rank?.matchesLost}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>26</p>
+          <p>{rank?.goaldifference}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center font-semibold lg:h-8 lg:w-8">
-          <p>89</p>
+          <p>{rank?.points}</p>
         </div>
       </div>
     </li>

@@ -118,11 +118,22 @@ export const getFixtures = async <T>(id: string): Promise<T> => {
 };
 
 export const getLiveFixtures = async <T>(id: string): Promise<T> => {
-  console.log(id, 'id')
   const res = await fetch(`/api/live-fixtures?id=${id}`, { cache: "no-store" });
+
+  console.log(res, 'getLiveFixturesres')
 
   if (!res.ok) {
     throw new Error("Failed to fetch fixtures");
+  }
+
+  return (await res.json()) as T;
+};
+
+export const getStandings = async <T>(id: string): Promise<T> => {
+  const res = await fetch(`/api/getStandings?id=${id}`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch standings");
   }
 
   return (await res.json()) as T;

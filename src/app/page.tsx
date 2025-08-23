@@ -26,6 +26,8 @@ const { hydrated } = useUserStore();
   const { categories, posts, liveFixtures, loading, error } =
     useFootballStore();
 
+    console.log(liveFixtures, 'liveFixtures')
+
      useEffect(() => {
     if (hydrated) {
       fetchFootballData();
@@ -73,11 +75,11 @@ const { hydrated } = useUserStore();
   <div className="flex gap-x-4 lg:gap-x-16 overflow-x-scroll scrollbar-none scroll-smooth snap-x snap-mandatory w-[40rem] lg:w-[55rem] ">
     {liveFixtures?.map((fixture) => (
       <div
-        key={fixture.matchInfo.id}
+        key={fixture?.matchInfo?.id}
         className="snap-start shrink-0 w-[300px]" // fixed width for sliding cards
       >
         <LiveFixtures
-          path={`/football/${fixture.matchInfo.competition.name.replace(/\s+/g, "-")}`}
+          path={`/football/${fixture?.matchInfo?.competition?.name.replace(/\s+/g, "-")}`}
           fixture={fixture.matchInfo}
         />
       </div>
