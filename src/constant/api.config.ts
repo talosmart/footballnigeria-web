@@ -139,3 +139,13 @@ export const getStandings = async <T>(id: string): Promise<T> => {
   return (await res.json()) as T;
 };
 
+export const getMatchPreview = async <T>(id: string): Promise<T> => {
+  const res = await fetch(`/api/getMatchPreview?id=${id}`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch match preview");
+  }
+
+  return (await res.json()) as T;
+};
+

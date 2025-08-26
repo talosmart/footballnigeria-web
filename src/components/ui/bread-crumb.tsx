@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function BreadCrumb() {
   const pathname = usePathname();
+        const searchParams = useSearchParams(); // ✅ get query params
+        const fixtureId = searchParams.get("fixture");
 
   const segments = pathname.split("/").filter((path) => path !== "");
 
@@ -26,7 +28,7 @@ export default function BreadCrumb() {
           key={i}
           className="last:text-primary flex items-center gap-x-2 text-sm font-medium text-[#B3B3B3] capitalize"
         >
-          <Link href={crumb.path}>{crumb.displayText}</Link>
+          <Link href={fixtureId ? `${crumb.path}?fixture=${fixtureId}` : crumb.path}>{crumb.displayText}</Link>
           {i < segments.length - 1 && (
             <Image
               src="/chevron-stroke.png"

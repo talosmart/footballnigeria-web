@@ -1,58 +1,27 @@
 "use client";
 
 import { getTournamentNavLists } from "@/components/methods";
-import SpinnerLoader from "@/components/SpinnerLoader";
 import Ads from "@/components/ui/ad";
 import BreadCrumb from "@/components/ui/bread-crumb";
-import MatchPreviewCard from "@/components/ui/card-match-preview";
-import FeaturedMatchCard, {
-  FeaturedMatchSliderControl,
-} from "@/components/ui/card-matches";
-// import { NewsCard } from "@/components/ui/card-news";
-import LeagueTable from "@/components/ui/league-table";
 import NavLinkList from "@/components/ui/navlink-list";
-import SubTitle from "@/components/ui/subtitle";
 import TrendyPost from "@/components/ui/TrendyPost";
 import { useFootballStore } from "@/store/footballStore";
-import { useUserStore } from "@/store/userStore";
 import { useParams } from "next/navigation";
 // import { lists } from "@/constants/data";
 
 export default function SuperEaglesNews() {
    const params = useParams();
 
-   const { hydrated } = useUserStore();
   const tournament = params.id as string;
 
   const tournamentName = tournament.replace(/-/g, " ");
 
-   const { categories, posts, calendar, fixtures, liveFixtures, standings, loading, error } =
+   const { categories } =
       useFootballStore();
   
-       
+      
 
-
-   if (loading) {
-    return (
-      <main className="py-20 flex justify-center items-center text-neutral-500">
-       <SpinnerLoader width='md:w-10' height='md:h-10' borderThickness='border-5' borderTBg = 'border-t-green-500' borderT = 'border-t-5' />
-      </main>
-    );
-  }
-
-  if (error ) {
-    return (
-      <main className="py-20 text-center text-red-500">
-        {error || 'Post not found'}
-      </main>
-    );
-  }
-
-     const filteredStandings = standings.filter(standing => standing?.competition?.name === tournamentName)
     const filteredCategories = categories.filter(category => category?.name === tournamentName)
-    const filteredLivefixtures = liveFixtures.filter(fixture => fixture?.matchInfo?.competition.name === tournamentName)
-
-    const standingsData = filteredStandings?.[0]?.stage?.[0]?.division.filter(div => div?.type === "total")
 
   const lists = getTournamentNavLists(tournament);
   return (
@@ -72,18 +41,11 @@ export default function SuperEaglesNews() {
             <NavLinkList lists={lists} />
           </section>
     
-              <TrendyPost categories={filteredCategories} />
+              <TrendyPost categories={filteredCategories} news={true}/>
           <section className="mb-5 flex flex-col gap-5 lg:mb-28 lg:items-start my-5">
            
             <aside className="grid gap-y-5 px-2.5 w-full lg:px-0">
-              {filteredLivefixtures.length > 0 && <MatchPreviewCard filteredfixtures={filteredLivefixtures} />}
               <Ads />
-                <div className="p-4">
-                    <SubTitle title="Table" />
-                  </div>
-              {standingsData?.map((data) => {
-                return <div key={data.groupId}><LeagueTable tournamentName={tournamentName} data={data} /></div>
-              })}
             </aside>
           </section>
     

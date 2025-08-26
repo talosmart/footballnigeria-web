@@ -90,23 +90,22 @@ export async function fetchFootballData() {
   }
 }
 
-export const getCountryNavLists = (tournament: string) => [
-  { title: "news", path: `/football/${tournament}/news` },
-  { title: "summary", path: `/football/${tournament}/summary` },
-  { title: "matches", path: `/football/${tournament}/matches` },
-  { title: "squad", path: `/football/${tournament}/squad` },
-  { title: "statistics", path: `/football/${tournament}/statistics` },
-  { title: "trophies", path: `/football/${tournament}/trophies` },
-  { title: "teams", path: `/football/${tournament}/all-teams` },
-  { title: "leagues & cup", path: `/football/${tournament}/leagues-&-cups` },
-  { title: "venue", path: `/football/${tournament}/venue` },
+export const getCountryNavLists = (tournament: string, id: any) => [
+  { title: "news", path: `/football/${tournament}/news?fixture=${id}` },
+  { title: "summary", path: `/football/${tournament}/summary?fixture=${id}` },
+  { title: "matches", path: `/football/${tournament}/matches?fixture=${id}` },
+  { title: "squad", path: `/football/${tournament}/squad?fixture=${id}` },
+  { title: "statistics", path: `/football/${tournament}/statistics?fixture=${id}` },
+  { title: "trophies", path: `/football/${tournament}/trophies?fixture=${id}` },
+  { title: "teams", path: `/football/${tournament}/all-teams?fixture=${id}` },
+  { title: "leagues & cup", path: `/football/${tournament}/leagues-&-cups?fixture=${id}` },
+  { title: "venue", path: `/football/${tournament}/venue?fixture=${id}` },
 ];
 
 export const getTournamentNavLists = (tournament: string) => [
   { title: "news", path: `/football/${tournament}/news` },
-  { title: "Scores & Fixtures", path: `/football/${tournament}/matches` },
+  { title: "Scores & Fixtures", path: `/football/${tournament}/scores-fixtures` },
   { title: "Table", path: `/football/${tournament}/table` },
-  { title: "stats", path: `/football/${tournament}/statistics` }
 ];
 
 

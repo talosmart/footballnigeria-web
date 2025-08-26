@@ -19,14 +19,13 @@ import { useFootballStore } from "../store/footballStore";
 import { fetchFootballData } from "@/components/methods";
 import { LiveFixtures } from "@/components/ui/live-fixtures";
 import TrendyPost from "@/components/ui/TrendyPost";
+import MoreButton from "@/components/ui/MoreButton";
 
 export default function Home() {
  
 const { hydrated } = useUserStore();
-  const { categories, posts, liveFixtures, loading, error } =
+  const { categories, posts, liveFixtures, fixtures, loading, error } =
     useFootballStore();
-
-    console.log(liveFixtures, 'liveFixtures')
 
      useEffect(() => {
     if (hydrated) {
@@ -45,6 +44,8 @@ const { hydrated } = useUserStore();
   //   })
   //   .filter(Boolean)
   //   .slice(0, 6);
+
+    const resultData = fixtures?.filter(fixture => fixture?.liveData?.matchDetails?.matchStatus === "Played")
 
    if (loading) {
     return (
@@ -70,8 +71,11 @@ const { hydrated } = useUserStore();
 
         {/* Trending Posts */}
        <TrendyPost categories={categories} homePage={true} />
-          <SubTitle title={`Live on Scores`} />
       <section className="relative w-full">
+        <div className="mb-5">
+
+          <SubTitle title={`Live on Scores`} />
+        </div>
   <div className="flex gap-x-4 lg:gap-x-16 overflow-x-scroll scrollbar-none scroll-smooth snap-x snap-mandatory w-[40rem] lg:w-[55rem] ">
     {liveFixtures?.map((fixture) => (
       <div
@@ -122,6 +126,17 @@ const { hydrated } = useUserStore();
               </section>
             );
           })}
+           <section className="relative w-full">
+      
+   {resultData.length > 0 && <MatchPreviewCard detail={false} type = 'Played' title="Latest Scores"  filteredfixtures={resultData} />}
+    <div className="my-5">
+
+    {resultData.length && <MoreButton
+                     path={`/football/${resultData?.[0]?.matchInfo?.competition.name.replace(/\s+/g, '-')}/scores-fixtures`}
+                     title={`More Sores & Fixtures`}
+                   />}
+    </div>
+</section>
             <div className="w-[60%] mx-auto">
           <PredictionCard />
         </div>
@@ -173,15 +188,3 @@ const { hydrated } = useUserStore();
   );
 }
 
-function MoreButton({ path, title }: { path: string; title: string }) {
-  return (
-    <div className="text-right">
-      <Link
-        href={path}
-        className="bg-primary font-lato inline-block rounded px-7 py-2.5 text-xs font-semibold text-white lg:text-sm"
-      >
-        {title}
-      </Link>
-    </div>
-  );
-}

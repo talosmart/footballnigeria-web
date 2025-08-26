@@ -9,6 +9,7 @@ interface FootballState {
   fixtures:[];
   liveFixtures:[];
   standings:[];
+  matchPreview: [];
   loading: boolean;
   error: string | null;
 
@@ -17,8 +18,9 @@ interface FootballState {
   setPosts: (posts:[]) => void;
   setCalendar: (calendar:[]) => void;
   setFixtures: (fixtures:[]) => void;
-  setLiveFixtures: (fixtures:[]) => void;
-  setStandings: (fixtures:[]) => void;
+  setLiveFixtures: (liveFixtures:[]) => void;
+  setStandings: (standings:[]) => void;
+  setMatchPreview: (matchPreview:[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;
@@ -33,6 +35,7 @@ export const useFootballStore = create<FootballState>()(
       fixtures: [],
       liveFixtures: [],
       standings: [],
+      matchPreview: [],
       loading: false,
       error: null,
 
@@ -42,6 +45,7 @@ export const useFootballStore = create<FootballState>()(
       setFixtures: (fixtures) => set({ fixtures }),
       setLiveFixtures: (liveFixtures) => set({ liveFixtures }),
       setStandings: (standings) => set({ standings }),
+      setMatchPreview: (matchPreview) => set({ matchPreview }),
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
 
@@ -53,6 +57,7 @@ export const useFootballStore = create<FootballState>()(
           fixtures: [],
           liveFixtures: [],
           standings: [],
+          matchPreview: [],
           loading: false,
           error: null,
         }),
@@ -66,6 +71,7 @@ export const useFootballStore = create<FootballState>()(
         fixtures: state.fixtures,
         liveFixtures: state.liveFixtures,
         standings: state.standings,
+        matchPreview: state.matchPreview,
       }),
     }
   )

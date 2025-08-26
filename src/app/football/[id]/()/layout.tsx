@@ -1,18 +1,23 @@
 "use client";
 
-import { getTournamentNavLists } from "@/components/methods";
+import { getCountryNavLists, getTournamentNavLists } from "@/components/methods";
 import BreadCrumb from "@/components/ui/bread-crumb";
 import NavLinkList from "@/components/ui/navlink-list";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+   
     const params = useParams();
+      const searchParams = useSearchParams(); // ✅ get query params
+      const fixtureId = searchParams.get("fixture");
   
     const tournament = params.id as string;
   
     const tournamentName = tournament.replace(/-/g, " ");
   
+    const id =fixtureId ? fixtureId : null
     const lists = getTournamentNavLists(tournament);
+      const countryLists = getCountryNavLists(tournament, id);
   return (
     <main className="font-lato pt-5 pb-5 lg:px-48 lg:pt-12 lg:pb-[6.25rem]">
       <div className="mb-5 px-2.5 lg:px-0">
@@ -28,7 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {tournamentName}
         </h1>
         <div className="border-b-border-default border-b">
-          <NavLinkList lists={lists} />
+          <NavLinkList lists={fixtureId ? countryLists : lists} />
         </div>
 
         {children}
