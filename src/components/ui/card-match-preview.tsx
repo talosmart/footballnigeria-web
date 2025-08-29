@@ -6,6 +6,8 @@ import { fifaToIso2 } from "../methods";
 import { addMinutes, format, parseISO } from "date-fns";
 import MoreButton from "./MoreButton";
 import Link from "next/link";
+import { useMatchStore } from "@/store/useMatchStore";
+import { useParams } from "next/navigation";
 
 // ----------------------
 // Types
@@ -73,6 +75,9 @@ interface MatchPreviewProps {
 
 const MatchPreview = ({ contestants, time, liveData, type, id }: MatchPreviewProps) => {
   const [home, away] = contestants ?? [];
+   const params = useParams();
+     
+       const country = params.id as string;
 
   // Safe fallback codes
   const homeCode = home?.code ?? "xx";
@@ -121,9 +126,9 @@ const MatchPreview = ({ contestants, time, liveData, type, id }: MatchPreviewPro
       {/* liveData */}
       <>
       
-      {type === 'Played'  && <div className="mx-2 shrink-0 rounded bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700">
+      {type === 'Played'  && <Link href={`/football/${country?.replace(/\s+/g, '-')}/matches?fixture=${id}`} className="mx-2 shrink-0 rounded bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700">
         {homeScore} - {awayScore}
-      </div>}
+      </Link>}
       
       {type === 'Fixture' && <div className="mx-2 shrink-0 rounded bg-emerald-50 px-2 py-0.5 font-semibold text-emerald-700">
         {formattedTime}

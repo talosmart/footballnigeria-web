@@ -90,6 +90,40 @@ export async function fetchFootballData() {
   }
 }
 
+
+  export const normalizeLiveData = (liveData) => {
+  const cards = liveData.card.map((c) => ({
+    id: c.timeMinSec,
+    type: 'card',
+    minute: c.timeMin,
+    player: c.playerName,
+    cardType: c.type, // "yellow" | "red" | "yellow_red"
+    team: c.contestantId,
+  }));
+
+  const goals = liveData.goal.map((g) => ({
+    id: g.timeMinSec,
+    type: "goal",
+    minute: g.timeMin,
+    player: g.scorerName,
+    // assist: g.assist,
+    team: g.contestantId,
+    score: `${g.homeScore} - ${g.awayScore}`, // e.g. "0 - 1"
+    method: g.type, // e.g. "Penalty"
+  }));
+
+  const subs = liveData.substitute.map((s) => ({
+    id: s.timeMinSec,
+    type: "substitute",
+    minute: s.timeMin,
+    playerIn: s.playerOnName,
+    playerOut: s.playerOffName,
+    team: s.contestantId,
+  }));
+
+  return [...cards, ...goals, ...subs].sort((a, b) => a.minute - b.minute);
+};
+
 export const getCountryNavLists = (tournament: string, id: any) => [
   { title: "news", path: `/football/${tournament}/news?fixture=${id}` },
   { title: "summary", path: `/football/${tournament}/summary?fixture=${id}` },

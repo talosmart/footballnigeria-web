@@ -10,6 +10,8 @@ interface FootballState {
   liveFixtures:[];
   standings:[];
   matchPreview: [];
+  basicStats: [];
+  squads: [];
   loading: boolean;
   error: string | null;
 
@@ -21,6 +23,8 @@ interface FootballState {
   setLiveFixtures: (liveFixtures:[]) => void;
   setStandings: (standings:[]) => void;
   setMatchPreview: (matchPreview:[]) => void;
+  setBasicStats: (basicStats:[]) => void;
+  setSquads: (squads:[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;
@@ -36,6 +40,8 @@ export const useFootballStore = create<FootballState>()(
       liveFixtures: [],
       standings: [],
       matchPreview: [],
+      basicStats: [],
+      squads: [],
       loading: false,
       error: null,
 
@@ -46,6 +52,8 @@ export const useFootballStore = create<FootballState>()(
       setLiveFixtures: (liveFixtures) => set({ liveFixtures }),
       setStandings: (standings) => set({ standings }),
       setMatchPreview: (matchPreview) => set({ matchPreview }),
+      setBasicStats: (basicStats) => set({ basicStats }),
+      setSquads: (squads) => set({ squads }),
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
 
@@ -58,6 +66,8 @@ export const useFootballStore = create<FootballState>()(
           liveFixtures: [],
           standings: [],
           matchPreview: [],
+          basicStats: [],
+          squads: [],
           loading: false,
           error: null,
         }),
@@ -72,6 +82,8 @@ export const useFootballStore = create<FootballState>()(
         liveFixtures: state.liveFixtures,
         standings: state.standings,
         matchPreview: state.matchPreview,
+        basicStats: state.basicStats,
+        squads: state.squads,
       }),
     }
   )

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import SwitchView from "./tab-switch-view";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GreenHeader from "./green-header";
 import { fifaToIso2 } from "../methods";
 
@@ -21,13 +21,39 @@ export default function LeagueTable({tournamentName, data}) {
   );
 }
 
-export function LeagueTableWithForm() {
+export function LeagueTableWithForm({tournamentName, filteredStandings}) {
   const [activeTab, setActiveTab] = useState("all");
+  const [activeTable, setActiveTable] = useState([])
+
+  useEffect(() => {
+setActiveTable(allStandings)
+  },[])
+
+
+  const allStandings = filteredStandings?.[0]?.stage?.[0]?.division.filter(standing => standing.type === 'total')
+  const homeStandings = filteredStandings?.[0]?.stage?.[0]?.division.filter(standing => standing.type === 'home')
+  const awayStandings = filteredStandings?.[0]?.stage?.[0]?.division.filter(standing => standing.type === 'away')
+   
+   useEffect(() => {
+    switch (activeTab) {
+      case "home":
+        setActiveTable(homeStandings);
+        break;
+      case "away":
+        setActiveTable(awayStandings);
+        break;
+      case "all":
+         setActiveTable(allStandings);
+      default:
+        setActiveTable(allStandings);
+        break;
+    }
+  }, [activeTab]);
 
   return (
     <section className="font-lato overflow-hidden rounded-t-2xl bg-white">
-      <h2 className="bg-primary py-2.5 text-center text-sm font-extrabold text-[#f3f3f3]">
-        LEAGUE TABLE
+      <h2 className="bg-primary py-2.5 text-center text-sm font-extrabold text-[#f3f3f3] uppercase">
+        {tournamentName}
       </h2>
 
       <SwitchView
@@ -36,8 +62,10 @@ export function LeagueTableWithForm() {
         activeTab={activeTab}
       />
 
-      <div className="text-neutral flex items-center justify-between bg-[#D9EDE5] px-3.5 py-[7.5px] text-xs font-bold lg:text-sm">
-        <h4 className="px-2.5 text-base">Team</h4>
+     {activeTable.map(table => (
+<>
+      <div key={table.groupId} className="text-neutral flex items-center justify-between bg-[#D9EDE5] px-3.5 py-[7.5px] text-xs font-bold lg:text-sm">
+        <h4 className="px-2.5 text-base">{table.groupName}</h4>
         <div className="flex gap-x-1 lg:gap-x-5">
           <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
             <h4>PL</h4>
@@ -57,67 +85,70 @@ export function LeagueTableWithForm() {
           <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
             <h4>Pts</h4>
           </div>
-          <div className="hidden h-5 w-40 items-center justify-center lg:flex lg:h-8">
+          {/* <div className="hidden h-5 w-40 items-center justify-center lg:flex lg:h-8">
             <h4>FORM</h4>
-          </div>
+          </div> */}
         </div>
       </div>
       <ul>
-        {new Array(11).fill("").map((_, i) => (
-          <LeagueTableRowWithForm key={i} i={i} active={[4, 7]} />
+        {table.ranking.map((rank, i) => (
+          <LeagueTableRowWithForm key={i} i={i} rank={rank} />
         ))}
       </ul>
+      </>
+     ))
+      }
     </section>
   );
 }
 
 const LeagueTableRowWithForm = ({
   i,
-  active,
+  rank
 }: {
   i: number;
-  active: number[];
+  rank: [];
 }) => {
+    const countryCode = fifaToIso2[rank.contestantCode];
+    const countryFlag = `https://flagcdn.com/w40/${countryCode}.png`;
   return (
     <li
-      className={`border-b-border-default font-lato flex items-center justify-between border-b px-1 py-2.5 text-sm text-black ${
-        active.includes(i) ? "bg-[#E6E6E6]" : ""
-      }`}
+      className={`border-b-border-default font-lato hover:bg-[#E6E6E6] flex items-center justify-between border-b px-1 py-2.5 text-sm text-black`}
     >
       <div className="flex h-8 w-8 items-center justify-center">
         <p className="font-bold">{i + 1}</p>
       </div>
       <div className="flex grow items-center gap-x-2.5 px-2.5">
-        <Image src="/club-1.svg" alt="" width={24} height={24.32} />
-        <span>Man United</span>
+        {countryFlag && <Image src={countryFlag} alt="flag" width={24} height={24.32} />}
+        <span>{rank.contestantClubName}</span>
       </div>
       <div className="flex gap-x-1 px-3 lg:gap-x-5">
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>56</p>
+          <p>{rank.matchesPlayed}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>6</p>
+          <p>{rank.matchesWon}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>3</p>
+          <p>{rank.matchesDrawn}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>0</p>
+          <p>{rank.matchesLost}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center lg:h-8 lg:w-8">
-          <p>26</p>
+          <p>{rank.goaldifference}</p>
         </div>
         <div className="flex h-5 w-5 items-center justify-center font-semibold lg:h-8 lg:w-8">
-          <p>89</p>
+          <p>{rank.points}</p>
         </div>
-        <div className="hidden w-40 justify-center gap-x-0.5 lg:flex">
+        {/* <div className="hidden w-40 justify-center gap-x-0.5 lg:flex">
           <TeamStat status="w" />
           <TeamStat status="w" />
           <TeamStat status="d" />
           <TeamStat status="w" />
           <TeamStat status="l" />
           <TeamStat status="l" />
-        </div>
+        </div> */}
       </div>
     </li>
   );

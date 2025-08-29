@@ -14,7 +14,7 @@ import { useParams, useSearchParams } from "next/navigation"; // ✅ import useS
 import { useEffect } from "react";
 import TrendyPost from "@/components/ui/TrendyPost";
 import MoreButton from "@/components/ui/MoreButton";
-import { getMatchPreview } from "@/constant/api.config";
+import { getBasicMatchStats, getMatchPreview, getSquads } from "@/constant/api.config";
 
 export default function SuperEagles() {
   const params = useParams();
@@ -24,13 +24,13 @@ export default function SuperEagles() {
   const { hydrated } = useUserStore();
   const tournament = params.id as string;
   
-  const { setMatchPreview } = useFootballStore.getState();
+  const { setMatchPreview, setBasicStats, setSquads } = useFootballStore.getState();
   
   const { categories, fixtures, standings, matchPreview, loading, error } = useFootballStore();
   const tournamentName = fixtureId ? matchPreview?.matchInfo?.competition?.name : tournament.replace(/-/g, " ");
   const tournamentTitle =tournament.replace(/-/g, " ");
 
-  console.log("Match Preview Data:", matchPreview);
+  const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
 
   // ✅ only fetch preview if fixture param exists
   useEffect(() => {
@@ -38,7 +38,11 @@ export default function SuperEagles() {
       try {
         if (fixtureId) {
           const data = await getMatchPreview(fixtureId);
+          const basicStat = await getBasicMatchStats(fixtureId);
+          const squad = await getSquads(tournamentId);
+          setBasicStats(basicStat);
           setMatchPreview(data);
+          setSquads(squad.squad)
         }
       } catch (error) {
         console.error("Error fetching match preview:", error);

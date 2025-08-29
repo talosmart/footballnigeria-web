@@ -120,7 +120,15 @@ export const getFixtures = async <T>(id: string): Promise<T> => {
 export const getLiveFixtures = async <T>(id: string): Promise<T> => {
   const res = await fetch(`/api/live-fixtures?id=${id}`, { cache: "no-store" });
 
-  console.log(res, 'getLiveFixturesres')
+  if (!res.ok) {
+    throw new Error("Failed to fetch fixtures");
+  }
+
+  return (await res.json()) as T;
+};
+
+export const getSquads = async <T>(id: string): Promise<T> => {
+  const res = await fetch(`/api/getSquads?id=${id}`, { cache: "no-store" });
 
   if (!res.ok) {
     throw new Error("Failed to fetch fixtures");
@@ -141,6 +149,16 @@ export const getStandings = async <T>(id: string): Promise<T> => {
 
 export const getMatchPreview = async <T>(id: string): Promise<T> => {
   const res = await fetch(`/api/getMatchPreview?id=${id}`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch match preview");
+  }
+
+  return (await res.json()) as T;
+};
+
+export const getBasicMatchStats = async <T>(id: string): Promise<T> => {
+  const res = await fetch(`/api/getBasicMatchStats?id=${id}`, { cache: "no-store" });
 
   if (!res.ok) {
     throw new Error("Failed to fetch match preview");
