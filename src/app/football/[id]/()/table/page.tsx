@@ -19,18 +19,21 @@ import {  getTournamentNavLists } from "@/components/methods";
 import Ads from "@/components/ui/ad";
 import LeagueTable from "@/components/ui/league-table";
 import SubTitle from "@/components/ui/subtitle";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function SuperEagles() {
    const params = useParams();
   const tournament = params.id as string;
+   const searchParams = useSearchParams(); 
+       const fixtureId = searchParams.get("fixture"); 
 
-  const tournamentName = tournament.replace(/-/g, " ");
+  const tournamentURLName = tournament.replace(/-/g, " ");
 
-   const { standings } =
+   const { standings, matchPreview } =
       useFootballStore();
 
-    
+     const tournamentMatchPreviewName = matchPreview?.matchInfo?.competition?.name 
+       const tournamentName = fixtureId ? tournamentMatchPreviewName : tournamentURLName;
 
      const filteredStandings = standings.filter(standing => standing?.competition?.name === tournamentName)
 
@@ -52,10 +55,10 @@ export default function SuperEagles() {
         <aside className="grid gap-y-5 px-2.5 w-full lg:px-0">
           <Ads />
             <div className="p-4">
-                <SubTitle title="Table" />
+                <SubTitle title={`${tournamentName} Table`} />
               </div>
           {standingsData?.map((data) => {
-            return <div key={data.groupId}><LeagueTable tournamentName={tournamentName} data={data} /></div>
+            return <div key={data.groupId}><LeagueTable tournamentName={tournamentName} data={data} detail={true} /></div>
           })}
          
         </aside>

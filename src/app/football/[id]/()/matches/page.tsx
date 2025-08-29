@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { parseISO, format } from "date-fns";
-import { getBasicMatchStats, getMatchPreview } from "@/constant/api.config";
+import { getBasicMatchStats, getMatchPreview, getSquads } from "@/constant/api.config";
 import SpinnerLoader from "@/components/SpinnerLoader";
 
 export default function Page1() {
@@ -19,7 +19,7 @@ export default function Page1() {
     const searchParams = useSearchParams(); // ✅ get query params
      const fixtureId = searchParams.get("fixture"); // ✅ read ?fixture=...
 
-      const { setMatchPreview, setBasicStats } = useFootballStore.getState();
+      const { setMatchPreview, setBasicStats, setSquads } = useFootballStore.getState();
 
       useEffect(() => {
          const getPreviewData = async () => {
@@ -50,8 +50,23 @@ export default function Page1() {
 
   console.log(basicStats, 'basicStats')
   console.log(matchPreview, 'matchPreview')
+const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
 
-   
+ useEffect(() => {
+    const getSquadsData = async () => {
+      try {
+        if (tournamentId) {
+          const squad = await getSquads(tournamentId);
+          setSquads(squad.squad)
+        }
+      } catch (error) {
+        console.error("Error fetching match preview:", error);
+      }
+    };
+
+    getSquadsData();
+  }, [tournamentId, setSquads]);
+
   if (loading) {
            return (
              <main className="py-20 flex justify-center items-center text-neutral-500">
@@ -76,15 +91,19 @@ export default function Page1() {
   const getCountryCode = matchPreview?.matchInfo?.contestant?.filter(team => team.name === country)
   const getHomeTeam = matchPreview?.matchInfo?.contestant?.filter(team => team.position === 'home')
   const getAwayTeam = matchPreview?.matchInfo?.contestant?.filter(team => team.position === 'away')
+  const head2HeadData = matchPreview?.previousMeetingsAnyComp?.match
 
   const homeId = getHomeTeam?.[0]?.id
   const awayId = getAwayTeam?.[0]?.id
+
+ 
   
 
   const homeCountryTeam = squads.filter(squad => squad.contestantId === homeId).map(team => team.person)
   const awayCountryTeam = squads.filter(squad => squad.contestantId === awayId).map(team => team.person)
 
-
+  console.log(awayId, 'awayId')
+  console.log(squads, 'squads')
 
   const countryCode = fifaToIso2[getCountryCode?.[0]?.code];
   const homeCountryCode = fifaToIso2[getHomeTeam?.[0]?.code];
@@ -121,26 +140,29 @@ const formattedDate = parsedDate ? format(parsedDate, "d MMM yyyy") : '-'
 
 
 
-   const homePlayers = homeCountryTeam?.[0].filter((p) => p.type === "player" && p.active === "yes");
+   const homePlayers = homeCountryTeam?.[0]?.filter((p) => p.type === "player" && p.active === "yes");
 const homeCoaches = homeCountryTeam?.[0]?.filter(
   (p) => p.type === "coach" || p.type === "assistant coach"
 );
 
-const homeStartingXI = homePlayers.slice(0, 11);   
-const homeSubstitutes = homePlayers.slice(11);
-   const awayPlayers = awayCountryTeam?.[0].filter((p) => p.type === "player" && p.active === "yes");
+const homeStartingXI = homePlayers?.slice(0, 11);   
+const homeSubstitutes = homePlayers?.slice(11);
+   const awayPlayers = awayCountryTeam?.[0]?.filter((p) => p.type === "player" && p.active === "yes");
 const awayCoaches = awayCountryTeam?.[0]?.filter(
   (p) => p.type === "coach" || p.type === "assistant coach"
 );
 
-const awayStartingXI = awayPlayers.slice(0, 11);   
-const awaySubstitutes = awayPlayers.slice(11);
+const awayStartingXI = awayPlayers?.slice(0, 11);   
+const awaySubstitutes = awayPlayers?.slice(11);
 
 const homeLineUp = {
   startingXI : homeStartingXI,
   substitute: homeSubstitutes,
   coaches: homeCoaches
 }
+
+console.log(homeLineUp, 'homeLineUp')
+console.log(homeCountryTeam, 'homeCountryTeam')
 
 const awayLineUp = {
   startingXI : awayStartingXI,
@@ -249,7 +271,7 @@ const awayLineUp = {
       {activeMatchTab === "summary" && <ExcitementIndex liveData={basicStats?.liveData} homeCountryId={homeCountryId}/>}
       {activeMatchTab === "line-ups" && <LinesUps homeLineUp={homeLineUp} awayLineUp={awayLineUp} />}
       {activeMatchTab === "table" && <LeagueTableWithForm tournamentName={tournamentName} filteredStandings={filteredStandings} />}
-      {activeMatchTab === "h2h" && <H2H />}
+      {activeMatchTab === "h2h" && <H2H head2HeadData={head2HeadData}/>}
     </section>
   );
 }
@@ -428,7 +450,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
             <div className="grid grid-cols-2 px-3">
               {/* Home */}
               <div className="grid gap-y-3">
-                {homeLineUp.startingXI.map((players) => (
+                {homeLineUp?.startingXI?.map((players) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
                     key={players.id}
@@ -442,7 +464,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
               </div>
               {/* Away */}
               <div className="grid gap-y-3">
-                {awayLineUp.startingXI.map((players) => (
+                {awayLineUp?.startingXI?.map((players) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
                     key={players.id}
@@ -465,7 +487,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
             <div className="grid grid-cols-2 px-3">
               {/* Home */}
               <div className="grid gap-y-3">
-                {homeLineUp.substitute.map((substitute) => (
+                {homeLineUp?.substitute?.map((substitute) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
                     key={substitute.id}
@@ -479,7 +501,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
               </div>
               {/* Away */}
               <div className="grid gap-y-3">
-               {awayLineUp.substitute.map((substitute) => (
+               {awayLineUp?.substitute?.map((substitute) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
                     key={substitute.id}
@@ -502,7 +524,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
             <div className="grid grid-cols-2 px-3">
               {/* Home */}
               <div className="grid gap-y-3">
-                {homeLineUp.coaches.map((coach) => (
+                {homeLineUp?.coaches?.map((coach) => (
                   <div key={coach.id} className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]">
                     <Image src="/coach.svg" alt="" width={24} height={24} />
                     <span className="text-[#1E1E1E]">{`${coach.firstName} ${coach.lastName} (${coach.type})`}</span>
@@ -512,7 +534,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
               </div>
               {/* Away */}
               <div className="grid gap-y-3">
-                {awayLineUp.coaches.map((coach) => (
+                {awayLineUp?.coaches?.map((coach) => (
                   <div key={coach.id} className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]">
                     <Image src="/coach.svg" alt="" width={24} height={24} />
                     <span className="text-[#1E1E1E]">{`${coach.firstName} ${coach.lastName} (${coach.type})`}</span>
@@ -528,7 +550,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
   );
 };
 
-const H2H = () => {
+const H2H = ({head2HeadData}) => {
   const [activeTab, setActiveTab] = useState("all");
   const [activeTab1, setActiveTab1] = useState("all");
 
@@ -536,13 +558,15 @@ const H2H = () => {
     <>
       <section>
         <GreenHeader heading="head to head matches (h2h)" />
+        {head2HeadData?.map((data)=>(
 
-        <ul className="mb-8">
-          <H2HList status="w" />
-          <H2HList status="d" />
+        <ul key={data.id} className="mb-8">
+          <H2HList data={data} />
+          {/* <H2HList status="d" />
           <H2HList status="l" />
-          <H2HList status="w" />
+          <H2HList status="w" /> */}
         </ul>
+        ))}
       </section>
 
       <div className="grid gap-x-7 lg:grid-cols-2">
@@ -580,21 +604,25 @@ const H2H = () => {
   );
 };
 
-const H2HList = ({ status }: { status: "w" | "d" | "l" }) => {
+const H2HList = ({ data }: {data: object }) => {
+  const status = data?.country === data?.contestants?.homeContestantName ? (data?.contestants?.homeScore - data?.contestants?.awayScore > 0 ? 'w' : data?.contestants?.homeScore - data?.contestants?.awayScore < 0 ? 'l' : 'd') : (data?.contestants?.awayScore - data?.contestants?.homeScore > 0 ? 'w' : data?.contestants?.awayScore - data?.contestants?.homeScore < 0 ? 'l' : 'd')
+
+// Parse and format with date-fns
+const formattedDate = data?.date ? format(parseISO(data?.date), "MMM d, yyyy") : ''
   return (
     <li className="font-lato flex items-center border-b border-b-[#D9D9D9] py-1.5 odd:bg-[#FAFAFA] even:bg-white">
       <div className="flex gap-x-1 px-2.5 text-sm leading-[1.125rem] font-medium lg:px-9">
-        <span className="text-[#757575]">29.011.</span>
-        <span className="text-[#1E1E1E]">14:00</span>
+        <span className="text-[#757575]">{formattedDate}</span>
+        {/* <span className="text-[#1E1E1E]">14:00</span> */}
       </div>
       <div className="grid grow gap-y-4 border-x border-x-[#D9D9D9] px-3 text-sm lg:px-12">
         <div className="flex justify-between font-bold">
-          <div>Shooting Stars</div>
-          <div>3</div>
+          <div>{data?.contestants?.homeContestantName}</div>
+          <div>{data?.contestants?.homeScore}</div>
         </div>
         <div className="flex justify-between">
-          <div>Eyimba</div>
-          <div>1</div>
+          <div>{data?.contestants?.awayContestantName}</div>
+          <div>{data?.contestants?.awayScore}</div>
         </div>
       </div>
       <div className="flex items-center gap-x-9 px-6 lg:px-9">

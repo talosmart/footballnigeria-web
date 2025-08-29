@@ -178,7 +178,7 @@ export default function SuperEagles() {
           ))}
           <div className="my-5">
             <MoreButton
-              path={`/football/${tournamentName.replace(/\s+/g, "-")}/table`}
+              path={`/football/${tournamentName?.replace(/\s+/g, "-")}/table`}
               title={`More ${tournamentName} table`}
             />
           </div>

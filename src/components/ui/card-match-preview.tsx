@@ -31,20 +31,22 @@ interface MatchPreviewCardProps {
   filteredfixtures: Fixture[];
    title: string;
    type: string;
+   tournamentName: string;
    detail: boolean;
 }
 
 // ----------------------
 // Main Card Component
 // ----------------------
-export default function MatchPreviewCard({ filteredfixtures, title, type, detail }: MatchPreviewCardProps) {
+export default function MatchPreviewCard({ filteredfixtures, title, type, detail, tournamentName }: MatchPreviewCardProps) {
   
   const matchData = detail ? filteredfixtures : filteredfixtures?.slice(0, 4);
   return (
     <section className="font-lato rounded-md bg-white px-3 py-5 shadow-sm">
-      <SubTitle title={title} />
+      {!detail && <SubTitle title={title} />}
 
       <ul className="mt-3 divide-y divide-gray-100">
+        {detail && <div className="text-center w-full mb-2 bg-[#E6F3EE] py-[9px]">{tournamentName}</div>}
         {matchData?.map((fixture) => (
           <MatchPreview
             key={fixture.matchInfo.id}

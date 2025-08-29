@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import GreenHeader from "./green-header";
 import { fifaToIso2 } from "../methods";
 
-export default function LeagueTable({tournamentName, data}) {
+export default function LeagueTable({tournamentName, data, detail = false}) {
   return (
     <section className="font-lato overflow-hidden rounded-t-2xl bg-white">
      
-      <GreenHeader heading={tournamentName} className="mb-0 text-center" />
+      {!detail && <GreenHeader heading={tournamentName} className="mb-0 text-center" />}
       <LeagueTableHeader title={data?.groupName} />
       <ul>
         {data?.ranking?.map((rank, i) => (
