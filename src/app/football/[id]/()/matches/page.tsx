@@ -112,6 +112,8 @@ const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
     const homeFormData = matchPreview?.form?.filter(team => team.contestantId === getHomeTeam?.[0].id)
     const awayFormData = matchPreview?.form?.filter(team => team.contestantId === getAwayTeam?.[0].id)
 
+    console.log(homeFormData, 'homeFormData')
+
   const countryFlag = getCountryCode?.length > 0 ? `https://flagcdn.com/w40/${countryCode}.png` : null;
   const homeCountryFlag = getHomeTeam?.length > 0 ? `https://flagcdn.com/w40/${homeCountryCode}.png` : null;
   const awayCountryFlag = getAwayTeam?.length > 0 ? `https://flagcdn.com/w40/${awayCountryCode}.png` : null;
@@ -271,7 +273,7 @@ const awayLineUp = {
       {activeMatchTab === "summary" && <ExcitementIndex liveData={basicStats?.liveData} homeCountryId={homeCountryId}/>}
       {activeMatchTab === "line-ups" && <LinesUps homeLineUp={homeLineUp} awayLineUp={awayLineUp} />}
       {activeMatchTab === "table" && <LeagueTableWithForm tournamentName={tournamentName} filteredStandings={filteredStandings} />}
-      {activeMatchTab === "h2h" && <H2H head2HeadData={head2HeadData}/>}
+      {activeMatchTab === "h2h" && <H2H homeH2H={homeFormData} awayH2H={awayFormData} head2HeadData={head2HeadData}/>}
     </section>
   );
 }
@@ -550,9 +552,13 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
   );
 };
 
-const H2H = ({head2HeadData}) => {
+const H2H = ({homeH2H, awayH2H, head2HeadData}) => {
   const [activeTab, setActiveTab] = useState("all");
   const [activeTab1, setActiveTab1] = useState("all");
+const homeTeamId = homeH2H?.[0]?.contestantId
+const awayTeamId = awayH2H?.[0]?.contestantId
+  const homeCountryName = homeH2H?.[0]?.match?.filter(team => team?.contestants?.homeContestantId === homeTeamId)
+  const awayCountryName = awayH2H?.[0]?.match?.filter(team => team?.contestants?.awayContestantId === awayTeamId)
 
   return (
     <>
@@ -571,33 +577,33 @@ const H2H = ({head2HeadData}) => {
 
       <div className="grid gap-x-7 lg:grid-cols-2">
         <section>
-          <GreenHeader heading="nigeria matches" />
+          <GreenHeader heading={`${homeCountryName?.[0]?.contestants?.homeContestantName} matches`} />
 
-          <SwitchView
+          {/* <SwitchView
             tabs={["All", "Home", "Away"]}
             setActiveTab={setActiveTab}
             activeTab={activeTab}
-          />
-          <ul className="mb-8">
-            <H2HListNoDropdown status="w" />
-            <H2HListNoDropdown status="d" />
-            <H2HListNoDropdown status="l" />
-            <H2HListNoDropdown status="w" />
+          /> */}
+          {homeH2H?.[0]?.match?.map(data => (
+
+          <ul key={data.id} className="mb-8">
+            <H2HListNoDropdown data={data} contestantId={homeTeamId}/>
           </ul>
+          ))}
         </section>
         <section>
-          <GreenHeader heading="ghana matches" />
-          <SwitchView
+          <GreenHeader heading={`${awayCountryName?.[0]?.contestants?.awayContestantName} matches`}/>
+          {/* <SwitchView
             tabs={["All", "Home", "Away"]}
             setActiveTab={setActiveTab1}
             activeTab={activeTab1}
-          />
-          <ul className="mb-8">
-            <H2HListNoDropdown status="w" />
-            <H2HListNoDropdown status="d" />
-            <H2HListNoDropdown status="l" />
-            <H2HListNoDropdown status="w" />
+          /> */}
+           {awayH2H?.[0]?.match?.map(data => (
+
+          <ul key={data.id} className="mb-8">
+            <H2HListNoDropdown data={data} contestantId={awayH2H?.[0]?.contestantId}/>
           </ul>
+          ))}
         </section>
       </div>
     </>
@@ -641,21 +647,24 @@ const formattedDate = data?.date ? format(parseISO(data?.date), "MMM d, yyyy") :
   );
 };
 
-const H2HListNoDropdown = ({ status }: { status: "w" | "d" | "l" }) => {
+const H2HListNoDropdown = ({ data, contestantId }: { data: object; contestantId: string}) => {
+    const status = contestantId === data?.contestants?.homeContestantId ? (data?.contestants?.homeScore - data?.contestants?.awayScore > 0 ? 'w' : data?.contestants?.homeScore - data?.contestants?.awayScore < 0 ? 'l' : 'd') : (data?.contestants?.awayScore - data?.contestants?.homeScore > 0 ? 'w' : data?.contestants?.awayScore - data?.contestants?.homeScore < 0 ? 'l' : 'd')
+
+  const formattedDate = data?.date ? format(parseISO(data?.date), "MMM d, yyyy") : ''
   return (
     <li className="font-lato flex items-center border-b border-b-[#D9D9D9] py-1.5 odd:bg-[#FAFAFA] even:bg-white">
       <div className="flex gap-x-1 px-2.5 text-sm leading-[1.125rem] font-medium">
-        <span className="text-[#757575]">29.011.</span>
-        <span className="text-[#1E1E1E]">14:00</span>
+        <span className="text-[#757575]">{formattedDate}</span>
+        {/* <span className="text-[#1E1E1E]">14:00</span> */}
       </div>
       <div className="grid grow gap-y-4 border-x border-x-[#D9D9D9] px-3 text-sm">
         <div className="flex justify-between font-bold">
-          <div>Shooting Stars</div>
-          <div>3</div>
+         <div>{data?.contestants?.homeContestantName}</div>
+          <div>{data?.contestants?.homeScore}</div>
         </div>
         <div className="flex justify-between">
-          <div>Eyimba</div>
-          <div>1</div>
+          <div>{data?.contestants?.awayContestantName}</div>
+          <div>{data?.contestants?.awayScore}</div>
         </div>
       </div>
       <div className="flex items-center px-6">
