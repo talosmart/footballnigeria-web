@@ -137,6 +137,16 @@ export const getSquads = async <T>(id: string): Promise<T> => {
   return (await res.json()) as T;
 };
 
+export const getTrophies = async <T>(id: string): Promise<T> => {
+  const res = await fetch(`/api/getTrophies?id=${id}`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch trophy data");
+  }
+
+  return (await res.json()) as T;
+};
+
 export const getStandings = async <T>(id: string): Promise<T> => {
   const res = await fetch(`/api/getStandings?id=${id}`, { cache: "no-store" });
 

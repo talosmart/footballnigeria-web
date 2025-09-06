@@ -11,7 +11,7 @@ export default function TagList({
 }) {
   return (
     <div className="flex flex-wrap gap-2.5">
-      {tags.map((tag, index) => (
+      {tags?.map((tag, index) => (
         <div key={index} className="cursor-pointer" onClick={() => handleTagClicked(tag.id)}>
           <Tag text={tag.name} className={className} />
         </div>

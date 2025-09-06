@@ -37,7 +37,6 @@ const resultData = fixtures?.filter(fixture => fixture?.liveData?.matchDetails?.
     const filteredResultData = resultData.filter(fixture => fixture?.matchInfo?.competition.name === tournamentName)
     const filteredLivefixtures = liveFixturesData.filter(fixture => fixture?.matchInfo?.competition.name === tournamentName)
 
-    console.log(filteredLivefixtures, 'filteredLivefixtures')
   return (
     <main className="pt-5 pb-5 lg:px-48 lg:pt-12 lg:pb-[6.25rem]">
       <div className="mb-2">

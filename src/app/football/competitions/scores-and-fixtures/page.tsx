@@ -1,122 +1,53 @@
 "use client";
 
-import GreenHeader from "@/components/ui/green-header";
+import { useFootballStore } from "@/store/footballStore";
+import {  getTournamentNavLists } from "@/components/methods";
+import Ads from "@/components/ui/ad";
+import BreadCrumb from "@/components/ui/bread-crumb";
+import MatchPreviewCard from "@/components/ui/card-match-preview";
+import LeagueTable from "@/components/ui/league-table";
+import NavLinkList from "@/components/ui/navlink-list";
+import SubTitle from "@/components/ui/subtitle";
+import { useParams, useSearchParams } from "next/navigation";
 import SwitchView from "@/components/ui/tab-switch-view";
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SwitchViewTab from "@/components/ui/switchViewTab";
 
-export default function News() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [activeMatchTab, setActiveMatchTab] = useState("all");
+export default function ScoresAndFixtures() {
+      const [activeTab, setActiveTab] = useState("fixtures");
+    
+
+   const { fixtures, matchPreview } =
+      useFootballStore();
+
+       const tournamentMatchPreviewName = matchPreview?.matchInfo?.competition?.name 
+       const tournamentName = tournamentMatchPreviewName 
+    
+
+const liveFixturesData = fixtures?.filter(fixture => fixture?.liveData?.matchDetails?.matchStatus === "Fixture")
+
+const resultData = fixtures?.filter(fixture => fixture?.liveData?.matchDetails?.matchStatus === "Played")
 
   return (
-    <section className="rounded-lg bg-white p-2.5 lg:p-5">
-      <GreenHeader heading="AFCON - Scores & Fixtures" />
+    <main className="pt-5 pb-5 lg:px-48 lg:pt-12 lg:pb-[6.25rem]">
+      <div className="mb-2">
 
-      <div className="px-3 py-2.5">
-        <p className="mb-2.5 text-sm font-bold">COMPETITIONS:</p>
-        <TabList
-          tags={[
-            "All",
-            "Friendlies",
-            "CAF Africa Cup of Nations",
-            "Africa Cup of Nations Qualification",
-            "CAF World Cup Qualifiers",
-            "Africa Nations Championship Qualification",
-          ]}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+     <SubTitle title={'Scores and Fixtures'} />
       </div>
-
-      <div className="mt-1 overflow-hidden rounded-lg">
-        <SwitchView
-          tabs={["All", "Home", "Away"]}
-          setActiveTab={setActiveMatchTab}
-          activeTab={activeMatchTab}
-        />
-        <h3 className="font-bai bg-[#E6F3EE] px-6 py-3.5 text-sm font-bold text-[#757575] uppercase lg:text-base">
-          Tuesday, November 19, 2024
-        </h3>
-        <ul>
-          <Score$FixtureList />
-          <Score$FixtureList />
-          <Score$FixtureList />
-          <Score$FixtureList />
-        </ul>
-      </div>
-    </section>
+<SwitchViewTab
+        tabs={["Fixtures", "Results"]}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+      />
+      <section className="mb-5 flex flex-col gap-5 lg:mb-28 lg:items-start my-5">
+        <aside className="grid gap-y-5 px-2.5 w-full lg:px-0">
+       
+          {liveFixturesData.length > 0 && activeTab === 'fixtures' && <MatchPreviewCard detail={true} type = 'Fixture' title="Today's Matches / Next Match"  filteredfixtures={liveFixturesData} tournamentName={''} />}
+          {resultData.length > 0 && activeTab === 'results' && <MatchPreviewCard detail={true} type = 'Played' title="Latest Scores"  filteredfixtures={resultData} tournamentName={''} />}
+          <Ads />
+         
+        </aside>
+      </section>
+    </main>
   );
 }
-
-function TabList({
-  tags,
-  activeTab,
-  setActiveTab,
-}: {
-  tags: string[];
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1">
-      {tags.map((tag) => (
-        <Tab
-          key={tag}
-          text={tag}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      ))}
-    </div>
-  );
-}
-
-const Tab = ({
-  text,
-  activeTab,
-  setActiveTab,
-}: {
-  text: string;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-}) => {
-  return (
-    <button
-      className={`font-lato rounded-full px-3 py-1 text-sm ${
-        activeTab === text.toLowerCase()
-          ? "bg-primary text-[#F3F3F3]"
-          : "bg-[#E6E6E6]"
-      }`}
-      onClick={() => setActiveTab(text.toLowerCase())}
-    >
-      {text}
-    </button>
-  );
-};
-
-const Score$FixtureList = () => {
-  return (
-    <li className="font-lato flex items-center border-b border-b-[#D9D9D9] py-1.5 odd:bg-white even:bg-[#FAFAFA]">
-      <div className="flex flex-col gap-x-1 px-2.5 text-sm leading-[1.125rem] font-medium text-[#757575] lg:pr-20 lg:pl-7">
-        <span>29.011.</span>
-        <span>FT</span>
-      </div>
-      <div className="grid grow gap-y-4 border-x border-x-[#D9D9D9] px-3 text-sm lg:px-9">
-        <div className="flex justify-between font-bold">
-          <div>Shooting Stars</div>
-          <div>3</div>
-        </div>
-        <div className="flex justify-between">
-          <div>Eyimba</div>
-          <div>1</div>
-        </div>
-      </div>
-      <div className="flex items-center justify-center gap-x-3 px-6 lg:px-28">
-        <Image src="/user-2.svg" alt="" width={24} height={24} className="h-[1.125rem] w-[1.125rem] lg:h-6 lg:w-6" />
-        <Image src="/lucide_view.svg" alt="" width={24} height={24} className="h-[1.125rem] w-[1.125rem] lg:h-6 lg:w-6" />
-        <Image src="/pitch.svg" alt="" width={24} height={24} className="h-[1.125rem] w-[1.125rem] lg:h-6 lg:w-6" />
-      </div>
-    </li>
-  );
-};

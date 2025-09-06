@@ -84,7 +84,7 @@ setPostById(fiterPostById)
       </main>
     );
   }
-  const topicData = topics.map((topic) => ({id: topic.id, name: topic.name}))
+  const topicData = topics?.map((topic) => ({id: topic.id, name: topic.name}))
 
 
   return (
@@ -103,7 +103,7 @@ setPostById(fiterPostById)
       </section>
 
       <section className="flex flex-col gap-5 lg:flex-row lg:items-start">
-        {postById.length > 0 ? <div className="grid gap-y-5">
+        {postById?.length > 0 ? <div className="grid gap-y-5">
           {postById?.map((post)=>{
             return <div key={post.id}><FanZoneCard post={post} /></div>
           })

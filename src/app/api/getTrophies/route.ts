@@ -7,13 +7,13 @@ export async function GET(req: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Missing standing id" },
+        { error: "Missing trophy id" },
         { status: 400 }
       );
     }
 
     const res = await fetch(
-     `http://api.footballnigeria.com/standings/${id}`, 
+     `http://api.footballnigeria.com/trophies/${id}`, 
     );
 
     if (!res.ok) {

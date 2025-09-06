@@ -39,7 +39,7 @@ interface MatchPreviewCardProps {
 // Main Card Component
 // ----------------------
 export default function MatchPreviewCard({ filteredfixtures, title, type, detail, tournamentName }: MatchPreviewCardProps) {
-  
+  console.log(filteredfixtures, 'filteredfixtures')
   const matchData = detail ? filteredfixtures : filteredfixtures?.slice(0, 4);
   return (
     <section className="font-lato rounded-md bg-white px-3 py-5 shadow-sm">
@@ -49,12 +49,13 @@ export default function MatchPreviewCard({ filteredfixtures, title, type, detail
         {detail && <div className="text-center w-full mb-2 bg-[#E6F3EE] py-[9px]">{tournamentName}</div>}
         {matchData?.map((fixture) => (
           <MatchPreview
-            key={fixture.matchInfo.id}
-            id={fixture.matchInfo.id}
+            key={fixture?.matchInfo?.id}
+            id={fixture?.matchInfo?.id}
             contestants={fixture.matchInfo.contestant}
             time={fixture.matchInfo.time}
             liveData={fixture?.liveData}
             type={type}
+            showFlag ={fixture?.matchInfo?.competition?.name !== 'NPFL'}
           />
         ))}
       </ul>
@@ -73,9 +74,10 @@ interface MatchPreviewProps {
   liveData?: object
   type?: string
   id?: string
+  showFlag?: boolean
 }
 
-const MatchPreview = ({ contestants, time, liveData, type, id }: MatchPreviewProps) => {
+const MatchPreview = ({ contestants, time, liveData, type, id, showFlag }: MatchPreviewProps) => {
   const [home, away] = contestants ?? [];
    const params = useParams();
      
@@ -116,7 +118,7 @@ const MatchPreview = ({ contestants, time, liveData, type, id }: MatchPreviewPro
       {/* Home */}
       <div className="flex flex-1 items-center justify-end gap-x-2 pr-2">
         <Link href={`/football/${home?.name.replace(/\s+/g, '-')}?fixture=${id}`}  className="truncate font-medium text-gray-800">{home?.name ?? "Unknown"}</Link>
-       {homeFlag &&  <Image
+       {homeFlag && showFlag &&  <Image
           src={homeFlag}
           alt={`${home?.name ?? "Unknown"} flag`}
           width={24}
@@ -139,7 +141,7 @@ const MatchPreview = ({ contestants, time, liveData, type, id }: MatchPreviewPro
 
       {/* Away */}
       <div className="flex flex-1 items-center gap-x-2 pl-2">
-        {awayFlag && <Image
+        {awayFlag && showFlag && <Image
           src={awayFlag}
           alt={`${away?.name ?? "Unknown"} flag`}
           width={24}

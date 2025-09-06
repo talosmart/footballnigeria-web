@@ -7,13 +7,14 @@ import GreenHeader from "./green-header";
 import { fifaToIso2 } from "../methods";
 
 export default function LeagueTable({tournamentName, data, detail = false}) {
+  const rankings = tournamentName === 'NPFL' ? data?.ranking?.slice(0,5) : data?.ranking
   return (
     <section className="font-lato overflow-hidden rounded-t-2xl bg-white">
      
       {!detail && <GreenHeader heading={tournamentName} className="mb-0 text-center" />}
       <LeagueTableHeader title={data?.groupName} />
       <ul>
-        {data?.ranking?.map((rank, i) => (
+        {rankings?.map((rank, i) => (
           <LeagueTableRow key={rank?.rankId} i={i} rank={rank} active={[4, 7]} tournamentName={tournamentName} />
         ))}
       </ul>

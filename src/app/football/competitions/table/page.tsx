@@ -1,49 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GreenHeader from "@/components/ui/green-header";
 import Image from "next/image";
-import { CompetitionsTable } from "@/components/ui/league-table";
+import LeagueTable from "@/components/ui/league-table";
+import { useFootballStore } from "@/store/footballStore";
+import { useUserStore } from "@/store/userStore";
+import { fetchFootballData } from "@/components/methods";
+import SubTitle from "@/components/ui/subtitle";
 
 export default function Tables() {
-  const [activeTab, setActiveTab] = useState("all");
+  const { categories, fixtures, standings, matchPreview, loading, error } =
+    useFootballStore();
+  const { hydrated } = useUserStore();
+
+  // ✅ Keep tab consistent (store original case, not lowercase)
+  const [activeTab, setActiveTab] = useState("All");
+
+  // Fetch data once user store is hydrated
+  useEffect(() => {
+    if (hydrated) {
+      fetchFootballData();
+    }
+  }, [hydrated]);
+
+  // ✅ Extract competition names
+  const competitionNames = standings.map(
+    (s) => s?.competition?.name || "Unknown"
+  );
+
+  // ✅ Build tags (unique list)
+  const competitionTags = ["All", ...new Set(competitionNames)];
+
+  // ✅ Filter standings by activeTab
+  const filteredStandings =
+    activeTab === "All"
+      ? standings
+      : standings.filter((s) => s?.competition?.name === activeTab);
+
+  // ✅ Extract divisions with type="total"
+  const standingsData =
+    filteredStandings?.[0]?.stage?.[0]?.division.filter(
+      (div) => div?.type === "total"
+    ) || [];
 
   return (
     <section className="rounded-lg bg-white p-2.5 lg:p-5">
-      <GreenHeader heading="Africa Cup of Nations Qualifying Table 2025" />
+      <GreenHeader heading={activeTab} />
 
       <div className="px-3 py-2.5">
-        <p className="mb-2.5 text-sm font-bold">COMPETITIONS:</p>
+
+        {/* ✅ Tabs */}
         <TabList
-          tags={[
-            "All",
-            "Friendlies",
-            "CAF Africa Cup of Nations",
-            "Africa Cup of Nations Qualification",
-            "CAF World Cup Qualifiers",
-            "Africa Nations Championship Qualification",
-          ]}
+          tags={competitionTags}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
 
-        <div className="my-3.5 flex w-fit gap-x-3 rounded-full bg-[#D9EDE5] p-1">
-          <div className="font-lato flex gap-x-2.5 rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1E1E1E]">
-            African Cup of Nation
-            <Image src="/chevron-black.svg" alt="" width={12} height={6} />
-          </div>
-          <div className="font-lato flex gap-x-2.5 rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1E1E1E]">
-            2025
-            <Image src="/chevron-black.svg" alt="" width={12} height={6} />
-          </div>
-        </div>
+        {/* ✅ Active Tag & Year */}
+        {/* <div className="my-3.5 flex w-fit gap-x-3 rounded-full bg-[#D9EDE5] p-1">
+          <TagPill text={activeTab} />
+          <TagPill text="2025" />
+        </div> */}
       </div>
 
-      <CompetitionsTable />
+      <div className="p-4">
+        <SubTitle title="Table" />
+      </div>
+
+      {/* ✅ Render first two divisions */}
+      {standingsData?.map((data) => (
+        <div key={data.groupId}>
+          <LeagueTable tournamentName={activeTab === "All" ? '' : activeTab} data={data} />
+        </div>
+      ))}
     </section>
   );
 }
 
+/* ------------------------------
+   🔹 Tab Components
+--------------------------------*/
 function TabList({
   tags,
   activeTab,
@@ -56,18 +93,13 @@ function TabList({
   return (
     <div className="flex flex-wrap gap-1">
       {tags.map((tag) => (
-        <Tab
-          key={tag}
-          text={tag}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
+        <Tab key={tag} text={tag} activeTab={activeTab} setActiveTab={setActiveTab} />
       ))}
     </div>
   );
 }
 
-const Tab = ({
+function Tab({
   text,
   activeTab,
   setActiveTab,
@@ -75,17 +107,29 @@ const Tab = ({
   text: string;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-}) => {
+}) {
+  const isActive = activeTab === text;
+
   return (
     <button
-      className={`font-lato rounded-full px-3 py-1 text-sm ${
-        activeTab === text.toLowerCase()
-          ? "bg-primary text-[#F3F3F3]"
-          : "bg-[#E6E6E6]"
+      className={`font-lato rounded-full px-3 py-1 text-sm transition-colors ${
+        isActive
+          ? "bg-primary text-white font-bold shadow-sm"
+          : "bg-[#E6E6E6] hover:bg-[#D0D0D0]"
       }`}
-      onClick={() => setActiveTab(text.toLowerCase())}
+      onClick={() => setActiveTab(text)}
+      aria-pressed={isActive}
     >
       {text}
     </button>
   );
-};
+}
+
+function TagPill({ text }: { text: string }) {
+  return (
+    <div className="font-lato flex items-center gap-x-2.5 rounded-full bg-white px-3 py-1 text-sm font-bold text-[#1E1E1E]">
+      {text}
+      <Image src="/chevron-black.svg" alt="" width={12} height={6} />
+    </div>
+  );
+}

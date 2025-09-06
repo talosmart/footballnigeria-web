@@ -39,7 +39,7 @@ export default function Page1() {
          };
      
          getPreviewData();
-       }, []);
+       }, [fixtureId, setMatchPreview, setBasicStats]);
 
       
 
@@ -78,7 +78,7 @@ const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
          if (error ) {
            return (
              <main className="py-20 text-center text-red-500">
-               {error || 'Post not found'}
+               {error || 'Match not found'}
              </main>
            );
          }
@@ -99,10 +99,10 @@ const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
  
   
 
-  const homeCountryTeam = squads.filter(squad => squad.contestantId === homeId).map(team => team.person)
-  const awayCountryTeam = squads.filter(squad => squad.contestantId === awayId).map(team => team.person)
+  const homeCountryTeam = squads?.filter(squad => squad.contestantId === homeId).map(team => team.person)
+  const awayCountryTeam = squads?.filter(squad => squad.contestantId === awayId).map(team => team.person)
 
-  console.log(awayId, 'awayId')
+  console.log(homeId, 'awayId')
   console.log(squads, 'squads')
 
   const countryCode = fifaToIso2[getCountryCode?.[0]?.code];
@@ -186,7 +186,7 @@ const awayLineUp = {
         />}
           <div>
             <p className="font-semibold text-[#1E1E1E]">
-              {`${matchPreview?.matchInfo?.competition.name}: ${matchPreview?.matchInfo?.series?.name}`}
+              {`${matchPreview?.matchInfo?.competition.name}: ${matchPreview?.matchInfo?.series?.name ? matchPreview?.matchInfo?.series?.name : ''}`}
              
             </p>
             <p className="text-sm text-[#757575]">{matchPreview?.matchInfo?.competition?.competitionCode}</p>
@@ -451,7 +451,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
 
             <div className="grid grid-cols-2 px-3">
               {/* Home */}
-              <div className="grid gap-y-3">
+              <div className="flex flex-col items-start gap-y-3">
                 {homeLineUp?.startingXI?.map((players) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
@@ -465,7 +465,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
                 ))}
               </div>
               {/* Away */}
-              <div className="grid gap-y-3">
+              <div className="flex flex-col items-start gap-y-3">
                 {awayLineUp?.startingXI?.map((players) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
@@ -488,7 +488,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
 
             <div className="grid grid-cols-2 px-3">
               {/* Home */}
-              <div className="grid gap-y-3">
+              <div className="flex flex-col items-start gap-y-3">
                 {homeLineUp?.substitute?.map((substitute) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"
@@ -502,7 +502,7 @@ const LinesUps = ({homeLineUp, awayLineUp}) => {
                 ))}
               </div>
               {/* Away */}
-              <div className="grid gap-y-3">
+              <div className="flex flex-col items-start gap-y-3">
                {awayLineUp?.substitute?.map((substitute) => (
                   <div
                     className="flex items-center gap-x-2.5 text-xs leading-[1.125rem] font-semibold tracking-[0.2px]"

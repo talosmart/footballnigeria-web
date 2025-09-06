@@ -20,9 +20,10 @@ export const lists = [
 
 export const headerNavLinks = [
   { path: "/", title: "Home", id: 0, exact: true },
-  { path: "/football/super-eagles", title: "News", id: 1 },
-  { path: "/scores-and-fixtures", title: "Scores & Fixture", id: 2 },
-  { path: "/tables", title: "Tables", id: 3 },
+  // { path: "/football/super-eagles", title: "News", id: 1 },
+  { path: "/football/competitions/news", title: "News", id: 1 },
+  { path: "/football/competitions/scores-and-fixtures", title: "Scores & Fixture", id: 2 },
+  { path: "/football/competitions/table", title: "Tables", id: 3 },
   { path: "/transfer", title: "Transfer", id: 4 },
   {
     title: "all teams",
