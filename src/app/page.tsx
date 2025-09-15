@@ -29,7 +29,7 @@ const { hydrated } = useUserStore();
     useFootballStore();
 
     const getPolls = async () => {
-const pollsData = await getFeaturedPolls()
+const pollsData = (await getFeaturedPolls()) as any
 setPolls(pollsData?.data)
     }
 
@@ -135,7 +135,7 @@ setPolls(pollsData?.data)
           })}
            <section className="relative w-full">
       
-   {resultData.length > 0 && <MatchPreviewCard detail={false} type = 'Played' title="Latest Scores"  filteredfixtures={resultData} />}
+   {resultData.length > 0 && <MatchPreviewCard tournamentName='' detail={false} type = 'Played' title="Latest Scores"  filteredfixtures={resultData} />}
     <div className="my-5">
 
     {resultData.length && <MoreButton

@@ -2,33 +2,63 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// interface FootballState {
+//   categories:[];
+//   posts:[];
+//   calendar:[];
+//   fixtures:[];
+//   liveFixtures:[];
+//   standings:[];
+//   matchPreview: [];
+//   basicStats: [];
+//   squads: [];
+//   loading: boolean;
+//   error: string | null;
+
+//   // actions
+//   setCategories: (categories:[]) => void;
+//   setPosts: (posts:[]) => void;
+//   setCalendar: (calendar:[]) => void;
+//   setFixtures: (fixtures:[]) => void;
+//   setLiveFixtures: (liveFixtures:[]) => void;
+//   setStandings: (standings:[]) => void;
+//   setMatchPreview: (matchPreview:[]) => void;
+//   setBasicStats: (basicStats:[]) => void;
+//   setSquads: (squads:[]) => void;
+//   setLoading: (loading: boolean) => void;
+//   setError: (error: string | null) => void;
+//   reset: () => void;
+// }
+
 interface FootballState {
-  categories:[];
-  posts:[];
-  calendar:[];
-  fixtures:[];
-  liveFixtures:[];
-  standings:[];
-  matchPreview: [];
-  basicStats: [];
-  squads: [];
+  categories: any[];
+  posts: any[];
+  calendar: any[];
+  fixtures: any[];
+  liveFixtures: any[];
+  standings: any[];
+  matchPreview: any | null; // 👈 object instead of array
+  basicStats: any | null;   // 👈 object instead of array
+  squads: any | null;
   loading: boolean;
   error: string | null;
 
   // actions
-  setCategories: (categories:[]) => void;
-  setPosts: (posts:[]) => void;
-  setCalendar: (calendar:[]) => void;
-  setFixtures: (fixtures:[]) => void;
-  setLiveFixtures: (liveFixtures:[]) => void;
-  setStandings: (standings:[]) => void;
-  setMatchPreview: (matchPreview:[]) => void;
-  setBasicStats: (basicStats:[]) => void;
-  setSquads: (squads:[]) => void;
+  setCategories: (categories: any[]) => void;
+  setPosts: (posts: any[]) => void;
+  setCalendar: (calendar: any[]) => void;
+  setFixtures: (fixtures: any[]) => void;
+  setLiveFixtures: (liveFixtures: any[]) => void;
+  setStandings: (standings: any[]) => void;
+  setMatchPreview: (matchPreview: any | null) => void; // 👈 updated
+  setBasicStats: (basicStats: any | null) => void;     // 👈 updated
+  setSquads: (squads: any | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;
 }
+
+
 
 export const useFootballStore = create<FootballState>()(
   persist(

@@ -4,8 +4,9 @@ import { getCountryNavLists, getTournamentNavLists } from "@/components/methods"
 import BreadCrumb from "@/components/ui/bread-crumb";
 import NavLinkList from "@/components/ui/navlink-list";
 import { useParams, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+function LayoutContent({ children }: { children: React.ReactNode }) {
    
     const params = useParams();
       const searchParams = useSearchParams(); // ✅ get query params
@@ -39,5 +40,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </section>
     </main>
+  );
+}
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LayoutContent>{children}</LayoutContent>
+    </Suspense>
   );
 }

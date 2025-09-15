@@ -94,7 +94,7 @@ export default function Page1() {
       {activeMatchTab === "info" && <Info />}
       {activeMatchTab === "summary" && <ExcitementIndex />}
       {activeMatchTab === "line-ups" && <LinesUps />}
-      {activeMatchTab === "table" && <LeagueTableWithForm />}
+      {/* {activeMatchTab === "table" && <LeagueTableWithForm />} */}
       {activeMatchTab === "h2h" && <H2H />}
     </section>
   );

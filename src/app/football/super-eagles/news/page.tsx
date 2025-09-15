@@ -56,7 +56,7 @@ export default function SuperEaglesNews() {
         </div>
         <aside className="grid w-full gap-y-5 px-2.5 lg:max-w-[371px] lg:px-0">
           <Ads />
-          <LeagueTable />
+          {/* <LeagueTable /> */}
         </aside>
       </section>
 

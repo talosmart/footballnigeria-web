@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function BreadCrumb() {
+function BreadCrumbContent() {
   const pathname = usePathname();
         const searchParams = useSearchParams(); // ✅ get query params
         const fixtureId = searchParams.get("fixture");
@@ -40,5 +41,14 @@ export default function BreadCrumb() {
         </p>
       ))}
     </div>
+  );
+}
+
+
+export default function BreadCrumb() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BreadCrumbContent />
+    </Suspense>
   );
 }

@@ -89,6 +89,7 @@ export default function News() {
               type="Fixture"
               title="Today's Matches / Next Match"
               filteredfixtures={liveFixturesData}
+              tournamentName=""
             />
           )}
           {resultData.length > 0 && (
@@ -97,6 +98,7 @@ export default function News() {
               type="Played"
               title="Latest Scores"
               filteredfixtures={resultData}
+              tournamentName=""
             />
           )}
 

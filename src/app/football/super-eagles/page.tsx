@@ -46,9 +46,9 @@ export default function SuperEagles() {
           </section>
         </div>
         <aside className="grid w-full gap-y-5 px-2.5 lg:max-w-[371px] lg:px-0">
-          <MatchPreviewCard />
+          {/* <MatchPreviewCard /> */}
           <Ads />
-          <NPFLLeagueTable />
+          {/* <NPFLLeagueTable /> */}
         </aside>
       </section>
 

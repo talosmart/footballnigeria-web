@@ -17,7 +17,7 @@ export default function TabContainer() {
        useFootballStore();
 
     const getPolls = async () => {
-   const pollsData = await getAllPolls()
+   const pollsData = (await getAllPolls()) as any
    const leaguePolls = pollsData?.data?.filter((poll) => poll.type === 'league')
    const nationalPolls = pollsData?.data?.filter((poll) => poll.type === 'national')
    setLeaguePolls(leaguePolls)

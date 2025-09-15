@@ -4,9 +4,7 @@ import Image from "next/image";
 import SubTitle from "./subtitle";
 import { fifaToIso2 } from "../methods";
 import { addMinutes, format, parseISO } from "date-fns";
-import MoreButton from "./MoreButton";
 import Link from "next/link";
-import { useMatchStore } from "@/store/useMatchStore";
 import { useParams } from "next/navigation";
 
 // ----------------------
@@ -35,6 +33,34 @@ interface MatchPreviewCardProps {
    detail: boolean;
 }
 
+interface Competition {
+  name: string;
+}
+
+interface MatchInfo {
+  id: string;
+  contestant: Contestant[];
+  time: string;
+  competition?: Competition;
+}
+
+interface LiveData {
+  matchDetails?: {
+    scores?: {
+      ft?: {
+        home?: number;
+        away?: number;
+      };
+    };
+  };
+}
+
+interface Fixture {
+  matchInfo: MatchInfo;
+  liveData?: LiveData;
+}
+
+
 // ----------------------
 // Main Card Component
 // ----------------------
@@ -56,7 +82,7 @@ export default function MatchPreviewCard({ filteredfixtures, title, type, detail
             liveData={fixture?.liveData}
             type={type}
             showFlag ={fixture?.matchInfo?.competition?.name !== 'NPFL'}
-            detail={detail}
+            // detail={detail}
           />
         ))}
       </ul>
@@ -69,14 +95,26 @@ export default function MatchPreviewCard({ filteredfixtures, title, type, detail
 // ----------------------
 // Match Preview Row
 // ----------------------
+interface LiveData {
+  matchDetails?: {
+    scores?: {
+      ft?: {
+        home?: number;
+        away?: number;
+      };
+    };
+  };
+}
+
 interface MatchPreviewProps {
   contestants: Contestant[];
   time: string;
-  liveData?: object
+  liveData?: LiveData
   type?: string
   id?: string
   showFlag?: boolean
 }
+
 
 const MatchPreview = ({ contestants, time, liveData, type, id, showFlag }: MatchPreviewProps) => {
   const [home, away] = contestants ?? [];

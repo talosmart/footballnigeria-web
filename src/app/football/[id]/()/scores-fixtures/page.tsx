@@ -10,10 +10,10 @@ import NavLinkList from "@/components/ui/navlink-list";
 import SubTitle from "@/components/ui/subtitle";
 import { useParams, useSearchParams } from "next/navigation";
 import SwitchView from "@/components/ui/tab-switch-view";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import SwitchViewTab from "@/components/ui/switchViewTab";
 
-export default function ScoresAndFixtures() {
+function ScoresAndFixturesContent() {
    const params = useParams();
      const searchParams = useSearchParams(); 
      const fixtureId = searchParams.get("fixture"); 
@@ -58,5 +58,13 @@ const resultData = fixtures?.filter(fixture => fixture?.liveData?.matchDetails?.
         </aside>
       </section>
     </main>
+  );
+}
+
+export default function ScoresAndFixtures() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ScoresAndFixturesContent />
+    </Suspense>
   );
 }

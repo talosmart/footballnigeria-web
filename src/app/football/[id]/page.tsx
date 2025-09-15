@@ -11,12 +11,12 @@ import NavLinkList from "@/components/ui/navlink-list";
 import SubTitle from "@/components/ui/subtitle";
 import { useUserStore } from "@/store/userStore";
 import { useParams, useSearchParams } from "next/navigation"; // ✅ import useSearchParams
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import TrendyPost from "@/components/ui/TrendyPost";
 import MoreButton from "@/components/ui/MoreButton";
 import { getBasicMatchStats, getMatchPreview, getSquads } from "@/constant/api.config";
 
-export default function SuperEagles() {
+function SuperEaglesContent() {
   const params = useParams();
   const searchParams = useSearchParams(); // ✅ get query params
   const fixtureId = searchParams.get("fixture"); // ✅ read ?fixture=...
@@ -37,9 +37,9 @@ export default function SuperEagles() {
     const getPreviewData = async () => {
       try {
         if (fixtureId) {
-          const data = await getMatchPreview(fixtureId);
-          const basicStat = await getBasicMatchStats(fixtureId);
-          const squad = await getSquads(tournamentId);
+          const data = (await getMatchPreview(fixtureId)) as any;
+          const basicStat = (await getBasicMatchStats(fixtureId)) as any;
+          const squad = (await getSquads(tournamentId)) as any;
           setBasicStats(basicStat);
           setMatchPreview(data);
           setSquads(squad.squad)
@@ -144,6 +144,7 @@ export default function SuperEagles() {
               type="Fixture"
               title="Today's Matches / Next Match"
               filteredfixtures={filteredLivefixtures}
+              tournamentName=""
             />
           )}
           {filteredResultData.length > 0 && (
@@ -152,6 +153,7 @@ export default function SuperEagles() {
               type="Played"
               title="Latest Scores"
               filteredfixtures={filteredResultData}
+              tournamentName=""
             />
           )}
 
@@ -185,5 +187,13 @@ export default function SuperEagles() {
         </aside>
       </section>
     </main>
+  );
+}
+
+export default function SuperEagles() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuperEaglesContent />
+    </Suspense>
   );
 }

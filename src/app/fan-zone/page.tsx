@@ -12,13 +12,30 @@ import { getPostList, getTopics } from "@/services/blog";
 import SpinnerLoader from "@/components/SpinnerLoader";
 import formatDate from "@/utils/format-date";
 
+type FanPost = {
+  id: number;
+  topic_id: number;
+  content: string;
+  comment_count: number;
+  user: {
+    full_name: string;
+    created_at: string;
+  };
+  media?: { url: string }[];
+};
+
+type Topic = {
+  id: number;
+  name: string;
+};
+
 export default function FanZone() {
-  const [postList, setPostList] = useState([]);
-  const [topics, setTopics] = useState([]);
-  const [postById, setPostById] = useState([]);
+  const [postList, setPostList] = useState<FanPost[]>([]);
+const [postById, setPostById] = useState<FanPost[]>([]);
    const [loading, setLoading] = useState(true);
    const [loadingTopics, setLoadingTopics] = useState(true);
      const [error, setError] = useState<string | null>(null);
+     const [topics, setTopics] = useState<Topic[]>([]);
 
       const { hydrated } = useUserStore();
      useEffect(() => {
@@ -60,14 +77,12 @@ export default function FanZone() {
       getTopicData()
     }, [hydrated]);
 
-      const handleTagClicked = useCallback((id: number) => {
+      const handleTagClicked = useCallback((id: string | number) => {
     const fiterPostById = postList.filter((post) => post?.topic_id == id)
    
 setPostById(fiterPostById)
   }, [postList])
 
-    console.log(postList, 'postList')
-    console.log(topics, 'topics')
 
       if (loading || loadingTopics) {
     return (
@@ -108,11 +123,11 @@ setPostById(fiterPostById)
             return <div key={post.id}><FanZoneCard post={post} /></div>
           })
             }
-          <FanZoneCard2 />
+          {/* <FanZoneCard2 /> */}
           {/* <FanZoneCard /> */}
         </div> : <h3 className="py-20 text-center text-green-500 font-bold text-base w-full">No Post Available at the Moment</h3>}
         <aside className="grid w-full gap-y-5 lg:max-w-[371px]">
-          <MatchPreviewCard />
+          {/* <MatchPreviewCard /> */}
           <Ads />
         </aside>
       </section>
@@ -131,6 +146,7 @@ const FanZoneCard = ({post}) => {
         <TagList
           tags={[{id: 1, name:"Free Predictions"}, {id: 2,name:"Bettings"}]}
           className="bg-primary text-white"
+          handleTagClicked={() => {}}
         />
       </section>
 
@@ -152,11 +168,24 @@ const FanZoneCard = ({post}) => {
   );
 };
 
-const FanZoneCard2 = (post) => {
+type FanZonePost = {
+  id: number;
+  title: string;
+  user: string;
+  content: string;
+  imageUrl?: string;
+  // add other fields your `post` actually has
+};
+
+type FanZoneCardProps = {
+  post: FanZonePost;
+};
+
+const FanZoneCard2 = ({ post }: FanZoneCardProps) => {
   return (
     <article className="font-lato grid gap-y-2.5 rounded-lg bg-white p-2.5">
       <section className="grid gap-y-3.5 py-2.5 lg:px-2.5">
-          <FanCardProfile user={post.user} />
+          <FanCardProfile user={post?.user} />
         <article className="flex gap-x-2.5">
           <section className="grow">
             <div className="mb-2.5 shrink lg:mb-8">
@@ -185,7 +214,7 @@ const FanZoneCard2 = (post) => {
             />
           </div>
         </article>
-        <EngagementActions />
+        {/* <EngagementActions /> */}
       </section>
     </article>
   );

@@ -18,7 +18,8 @@ export default function BlogDetailsPage({
   const { hydrated } = useUserStore();
 
   const [post, setPost] = useState<Post | null>(null);
-  const [posts, setPosts] = useState(null);
+ 
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -83,7 +84,7 @@ export default function BlogDetailsPage({
         <div
         className={`relative w-1/2 shrink-0 overflow-hidden rounded-lg lg:min-h-[349px] mb-5`}
       >
-        <Image src={post?.featured_image_url} alt="news image" fill className="z-0 object-cover" />
+        {post?.featured_image_url && <Image src={post?.featured_image_url} alt="news image" fill className="z-0 object-cover" />}
         </div>
         <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
         <div

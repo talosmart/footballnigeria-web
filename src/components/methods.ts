@@ -3,6 +3,21 @@ import { getCalendar, getFixtures, getLiveFixtures, getStandings } from "@/const
 import { getCategories, getPosts } from "@/services/blog";
 import { useFootballStore } from "@/store/footballStore";
 
+interface CalendarResponse {
+  competition: {
+    tournamentCalendar?: { id: string }[];
+  }[];
+}
+
+interface CategoriesResponse {
+  response?: { data?: any[] };
+}
+
+interface PostsResponse {
+  response?: { data?: any[] };
+}
+
+
 export async function fetchFootballData() {
   const {
     setCategories,
@@ -19,11 +34,11 @@ export async function fetchFootballData() {
     setLoading(true);
 
     // fetch meta
-    const [categoriesRes, postsRes, calendarRes] = await Promise.all([
+    const [categoriesRes, postsRes, calendarRes] = (await Promise.all([
       getCategories(),
       getPosts(),
       getCalendar(),
-    ]);
+    ])) as [CategoriesResponse, PostsResponse, CalendarResponse];;
 
     const categories = categoriesRes?.response?.data ?? [];
     const posts = postsRes?.response?.data ?? [];
@@ -72,8 +87,8 @@ export async function fetchFootballData() {
         ),
       ]);
 
-      setFixtures(fixturesResults.flatMap((f) => f?.match ?? []));
-      setLiveFixtures(liveFixturesResults.flatMap((f) => f?.match ?? []));
+      setFixtures(fixturesResults.flatMap((f: any) => f?.match ?? []));
+      setLiveFixtures(liveFixturesResults.flatMap((f: any) => f?.match ?? []));
       setStandings(standings ?? []);
     } else {
       setFixtures([]);

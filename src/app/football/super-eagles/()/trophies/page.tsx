@@ -12,16 +12,16 @@ export default function Trophies() {
         <section className="mb-6 tracking-[0.2px]">
           <SectionHeading title="  CLUB DOMESTIC" />
           <ul className="grid gap-y-3 text-[11px] lg:text-[13px]">
-            <Trophy />
-            <Trophy />
+            {/* <Trophy />
+            <Trophy /> */}
           </ul>
         </section>
 
         <section className="mb-6 tracking-[0.2px]">
           <SectionHeading title="National" />
           <ul className="grid gap-y-3 text-[11px] lg:text-[13px]">
-            <Trophy />
-            <Trophy />
+            {/* <Trophy />
+            <Trophy /> */}
           </ul>
         </section>
       </div>

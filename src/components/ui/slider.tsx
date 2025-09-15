@@ -3,11 +3,28 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Post } from "@/types/blog.types";
+
+// blog.types.ts
+export type Category = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
+export type Post = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  featured_image_url: string;
+  categories?: Category[]; // 👈 add this
+};
 
 type SliderProps = {
   posts: Post[];
 };
+
+
 
 export default function Slider({ posts }: SliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -93,7 +110,7 @@ export default function Slider({ posts }: SliderProps) {
     />
   ))}
 </div>
->
+
     </div>
   );
 }

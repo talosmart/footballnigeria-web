@@ -103,12 +103,23 @@ setActiveTable(allStandings)
   );
 }
 
+interface Ranking {
+  contestantCode: string;
+  contestantClubName: string;
+  matchesPlayed: number;
+  matchesWon: number;
+  matchesDrawn: number;
+  matchesLost: number;
+  goaldifference: number;
+  points: number;
+}
+
 const LeagueTableRowWithForm = ({
   i,
   rank
 }: {
   i: number;
-  rank: [];
+  rank: Ranking;
 }) => {
     const countryCode = fifaToIso2[rank.contestantCode];
     const countryFlag = `https://flagcdn.com/w40/${countryCode}.png`;
@@ -241,7 +252,7 @@ function LeagueTableHeader({ title }: { title: string }) {
   );
 }
 
-const LeagueTableRow = ({ i, rank, active, tournamentName }: { i: number; rank: object; active: number[]; tournamentName: string }) => {
+const LeagueTableRow = ({ i, rank, active, tournamentName }: { i: number; rank: Ranking; active: number[]; tournamentName: string }) => {
     // Safe fallback codes
     const contestantCode = rank?.contestantCode ?? "xx";
   

@@ -8,7 +8,6 @@ import MatchPreviewCard from "@/components/ui/card-match-preview";
 import LeagueTable from "@/components/ui/league-table";
 import NavLinkList from "@/components/ui/navlink-list";
 import SubTitle from "@/components/ui/subtitle";
-import { useParams, useSearchParams } from "next/navigation";
 import SwitchView from "@/components/ui/tab-switch-view";
 import { useEffect, useState } from "react";
 import SwitchViewTab from "@/components/ui/switchViewTab";

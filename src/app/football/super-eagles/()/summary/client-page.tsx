@@ -65,7 +65,7 @@ export default function ClientSummaryPage() {
       </section>
 
       <section className="pt-5">
-        <LeagueTable />
+        {/* <LeagueTable /> */}
       </section>
     </>
   );

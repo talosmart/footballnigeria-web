@@ -7,12 +7,12 @@ import SwitchView from "@/components/ui/tab-switch-view";
 import { useFootballStore } from "@/store/footballStore";
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { parseISO, format } from "date-fns";
 import { getBasicMatchStats, getMatchPreview, getSquads } from "@/constant/api.config";
 import SpinnerLoader from "@/components/SpinnerLoader";
 
-export default function Page1() {
+function Page1Content() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
    const params = useParams();
@@ -26,8 +26,8 @@ export default function Page1() {
            try {
              if (fixtureId) {
               setLoading(true)
-               const data = await getMatchPreview(fixtureId);
-               const basicStat = await getBasicMatchStats(fixtureId);
+               const data =( await getMatchPreview(fixtureId))as any[];
+               const basicStat = (await getBasicMatchStats(fixtureId)) as any[];
                setBasicStats(basicStat);
                setMatchPreview(data);
                setLoading(false)
@@ -47,16 +47,13 @@ export default function Page1() {
   const { categories, fixtures, standings, matchPreview, basicStats, squads } = useFootballStore();
 
   const country = params.id as string;
-
-  console.log(basicStats, 'basicStats')
-  console.log(matchPreview, 'matchPreview')
 const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
 
  useEffect(() => {
     const getSquadsData = async () => {
       try {
         if (tournamentId) {
-          const squad = await getSquads(tournamentId);
+          const squad = (await getSquads(tournamentId)) as any;
           setSquads(squad.squad)
         }
       } catch (error) {
@@ -87,7 +84,6 @@ const tournamentId = matchPreview?.matchInfo?.tournamentCalendar?.id
     (standing) => standing?.competition?.name === tournamentName
   );
 
-  console.log(filteredStandings, 'filteredStandings')
   const getCountryCode = matchPreview?.matchInfo?.contestant?.filter(team => team.name === country)
   const getHomeTeam = matchPreview?.matchInfo?.contestant?.filter(team => team.position === 'home')
   const getAwayTeam = matchPreview?.matchInfo?.contestant?.filter(team => team.position === 'away')
@@ -610,7 +606,7 @@ const awayTeamId = awayH2H?.[0]?.contestantId
   );
 };
 
-const H2HList = ({ data }: {data: object }) => {
+const H2HList = ({ data }: { data: any }) => {
   const status = data?.country === data?.contestants?.homeContestantName ? (data?.contestants?.homeScore - data?.contestants?.awayScore > 0 ? 'w' : data?.contestants?.homeScore - data?.contestants?.awayScore < 0 ? 'l' : 'd') : (data?.contestants?.awayScore - data?.contestants?.homeScore > 0 ? 'w' : data?.contestants?.awayScore - data?.contestants?.homeScore < 0 ? 'l' : 'd')
 
 // Parse and format with date-fns
@@ -647,7 +643,7 @@ const formattedDate = data?.date ? format(parseISO(data?.date), "MMM d, yyyy") :
   );
 };
 
-const H2HListNoDropdown = ({ data, contestantId }: { data: object; contestantId: string}) => {
+const H2HListNoDropdown = ({ data, contestantId }: { data: any; contestantId: string }) => {
     const status = contestantId === data?.contestants?.homeContestantId ? (data?.contestants?.homeScore - data?.contestants?.awayScore > 0 ? 'w' : data?.contestants?.homeScore - data?.contestants?.awayScore < 0 ? 'l' : 'd') : (data?.contestants?.awayScore - data?.contestants?.homeScore > 0 ? 'w' : data?.contestants?.awayScore - data?.contestants?.homeScore < 0 ? 'l' : 'd')
 
   const formattedDate = data?.date ? format(parseISO(data?.date), "MMM d, yyyy") : ''
@@ -773,3 +769,11 @@ const Post = () => {
     </div>
   );
 };
+
+export default function Page1() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Page1Content />
+    </Suspense>
+  );
+}

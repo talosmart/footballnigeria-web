@@ -20,8 +20,9 @@ import Ads from "@/components/ui/ad";
 import LeagueTable from "@/components/ui/league-table";
 import SubTitle from "@/components/ui/subtitle";
 import { useParams, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function SuperEagles() {
+function SuperEaglesContent() {
    const params = useParams();
   const tournament = params.id as string;
    const searchParams = useSearchParams(); 
@@ -69,3 +70,10 @@ export default function SuperEagles() {
 
 
 
+export default function SuperEagles() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuperEaglesContent />
+    </Suspense>
+  );
+}
