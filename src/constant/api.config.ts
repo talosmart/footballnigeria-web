@@ -1,3 +1,4 @@
+import { useFootballStore } from "@/store/footballStore";
 import { useUserStore } from "@/store/userStore";
 
 export type Method = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
@@ -173,6 +174,39 @@ export const getBasicMatchStats = async <T>(id: string): Promise<T> => {
   if (!res.ok) {
     throw new Error("Failed to fetch match preview");
   }
+
+  return (await res.json()) as T;
+};
+
+
+export const getFeaturedPolls = async <T>(): Promise<T> => {
+   const {
+      setLoading,
+    } = useFootballStore.getState();
+
+    setLoading(true)
+  const res = await fetch(`/api/getFeaturedPolls`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch polls");
+  }
+  setLoading(false)
+
+  return (await res.json()) as T;
+};
+
+export const getAllPolls = async <T>(): Promise<T> => {
+   const {
+      setLoading,
+    } = useFootballStore.getState();
+
+    setLoading(true)
+  const res = await fetch(`/api/getAllPolls`, { cache: "no-store" });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch polls");
+  }
+  setLoading(false)
 
   return (await res.json()) as T;
 };

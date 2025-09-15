@@ -56,6 +56,7 @@ export default function MatchPreviewCard({ filteredfixtures, title, type, detail
             liveData={fixture?.liveData}
             type={type}
             showFlag ={fixture?.matchInfo?.competition?.name !== 'NPFL'}
+            detail={detail}
           />
         ))}
       </ul>

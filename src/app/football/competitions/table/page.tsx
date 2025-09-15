@@ -71,7 +71,7 @@ export default function Tables() {
       {/* ✅ Render first two divisions */}
       {standingsData?.map((data) => (
         <div key={data.groupId}>
-          <LeagueTable tournamentName={activeTab === "All" ? '' : activeTab} data={data} />
+          <LeagueTable detail={true} tournamentName={activeTab === "All" ? '' : activeTab} data={data} />
         </div>
       ))}
     </section>

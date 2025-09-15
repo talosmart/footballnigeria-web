@@ -20,16 +20,23 @@ import { fetchFootballData } from "@/components/methods";
 import { LiveFixtures } from "@/components/ui/live-fixtures";
 import TrendyPost from "@/components/ui/TrendyPost";
 import MoreButton from "@/components/ui/MoreButton";
+import { getFeaturedPolls } from "@/constant/api.config";
 
 export default function Home() {
- 
+ const [polls, setPolls] = useState([])
 const { hydrated } = useUserStore();
   const { categories, posts, liveFixtures, fixtures, loading, error } =
     useFootballStore();
 
+    const getPolls = async () => {
+const pollsData = await getFeaturedPolls()
+setPolls(pollsData?.data)
+    }
+
      useEffect(() => {
     if (hydrated) {
       fetchFootballData();
+      getPolls()
     }
   }, [hydrated]);
 
@@ -137,9 +144,13 @@ const { hydrated } = useUserStore();
                    />}
     </div>
 </section>
-            <div className="w-[60%] mx-auto">
-          <PredictionCard />
-        </div>
+            
+           <div className="grid grid-cols-1 lg:grid-cols-2 mx-auto space-y-6 lg:space-x-6 lg:space-y-0">
+      {polls?.map((poll) => (
+        <PredictionCard key={poll.id} poll={poll} />
+      ))}
+    </div>
+        
           <section className="relative h-[241px] overflow-hidden rounded-2xl bg-blend-overlay lg:h-[457px]">
                   <Image
                     src="/play.svg"
