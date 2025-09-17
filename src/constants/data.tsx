@@ -19,7 +19,7 @@ export const lists = [
 ];
 
 export const headerNavLinks = [
-  { path: "/", title: "HomeHome", id: 0, exact: true },
+  { path: "/", title: "Home", id: 0, exact: true },
   // { path: "/football/super-eagles", title: "News", id: 1 },
   { path: "/football/competitions/news", title: "News", id: 1 },
   { path: "/football/competitions/scores-and-fixtures", title: "Scores & Fixture", id: 2 },

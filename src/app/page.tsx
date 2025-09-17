@@ -83,11 +83,11 @@ setPolls(pollsData?.data)
 
           <SubTitle title={`Live on Scores`} />
         </div>
-  <div className="flex gap-x-4 lg:gap-x-16 overflow-x-scroll scrollbar-none scroll-smooth snap-x snap-mandatory w-[40rem] lg:w-[55rem] ">
+  <div className="flex gap-x-4 lg:gap-x-16 overflow-x-scroll scrollbar-none scroll-smooth snap-x snap-mandatory w-[25rem] lg:w-[55rem] ">
     {liveFixtures?.map((fixture) => (
       <div
         key={fixture?.matchInfo?.id}
-        className="snap-start shrink-0 w-[300px]" // fixed width for sliding cards
+        className="snap-start shrink-0 w-[250px] sm:w-[300px]" // fixed width for sliding cards
       >
         <LiveFixtures
           path={`/football/${fixture?.matchInfo?.competition?.name.replace(/\s+/g, "-")}`}

@@ -146,7 +146,7 @@ export default function Footer() {
 
       {/* Copyright */}
       <section className="border-border-default justify-between border-t pt-5 text-center text-sm leading-7 lg:flex">
-        <p>Copyright © 2024 nigeriafc.com</p>
+        <p>Copyright © 2025 footballnigeria.com</p>
         <p>
           All Rights Reserved |{" "}
           <Link className="underline" href={"#"}>
