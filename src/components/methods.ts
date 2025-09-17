@@ -26,6 +26,7 @@ export async function fetchFootballData() {
     setFixtures,
     setLiveFixtures,
     setStandings,
+    // setTransfers,
     setLoading,
     setError,
   } = useFootballStore.getState();
@@ -85,11 +86,22 @@ export async function fetchFootballData() {
             }
           })
         ),
+        // Promise.all(
+        //   ids.map(async (id: string) => {
+        //     try {
+        //       return await getTransferData(id);
+        //     } catch (e) {
+        //       console.error(`Failed fetching transfer data for id ${id}`, e);
+        //       return { match: [] };
+        //     }
+        //   })
+        // ),
       ]);
 
       setFixtures(fixturesResults.flatMap((f: any) => f?.match ?? []));
       setLiveFixtures(liveFixturesResults.flatMap((f: any) => f?.match ?? []));
       setStandings(standings ?? []);
+      // setTransfers(transfers ?? []);
     } else {
       setFixtures([]);
       setLiveFixtures([]);

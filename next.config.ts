@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "football.ogitechconsults.ng",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "admin.footballnigeria.com",
+        pathname: "/**",
+      },
         {
         protocol: "https",
         hostname: "flagcdn.com",

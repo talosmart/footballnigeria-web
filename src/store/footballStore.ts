@@ -37,6 +37,7 @@ interface FootballState {
   fixtures: any[];
   liveFixtures: any[];
   standings: any[];
+  transfers: any[];
   matchPreview: any | null; // 👈 object instead of array
   basicStats: any | null;   // 👈 object instead of array
   squads: any | null;
@@ -50,6 +51,7 @@ interface FootballState {
   setFixtures: (fixtures: any[]) => void;
   setLiveFixtures: (liveFixtures: any[]) => void;
   setStandings: (standings: any[]) => void;
+  setTransfers: (transfers: any[]) => void;
   setMatchPreview: (matchPreview: any | null) => void; // 👈 updated
   setBasicStats: (basicStats: any | null) => void;     // 👈 updated
   setSquads: (squads: any | null) => void;
@@ -69,6 +71,7 @@ export const useFootballStore = create<FootballState>()(
       fixtures: [],
       liveFixtures: [],
       standings: [],
+      transfers: [],
       matchPreview: [],
       basicStats: [],
       squads: [],
@@ -81,6 +84,7 @@ export const useFootballStore = create<FootballState>()(
       setFixtures: (fixtures) => set({ fixtures }),
       setLiveFixtures: (liveFixtures) => set({ liveFixtures }),
       setStandings: (standings) => set({ standings }),
+      setTransfers: (transfers) => set({ transfers }),
       setMatchPreview: (matchPreview) => set({ matchPreview }),
       setBasicStats: (basicStats) => set({ basicStats }),
       setSquads: (squads) => set({ squads }),
@@ -95,6 +99,7 @@ export const useFootballStore = create<FootballState>()(
           fixtures: [],
           liveFixtures: [],
           standings: [],
+          transfers: [],
           matchPreview: [],
           basicStats: [],
           squads: [],
@@ -111,6 +116,7 @@ export const useFootballStore = create<FootballState>()(
         fixtures: state.fixtures,
         liveFixtures: state.liveFixtures,
         standings: state.standings,
+        transfers: state.transfers,
         matchPreview: state.matchPreview,
         basicStats: state.basicStats,
         squads: state.squads,
