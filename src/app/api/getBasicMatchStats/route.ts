@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     }
 
     const res = await fetch(
-     `${THIRD_BASE_URL}${id}`, 
+     `${THIRD_BASE_URL}basic-stats/${id}`, 
     );
 
     if (!res.ok) {

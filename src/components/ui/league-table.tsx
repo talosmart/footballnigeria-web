@@ -15,7 +15,7 @@ export default function LeagueTable({tournamentName, data, detail = false}) {
       <LeagueTableHeader title={data?.groupName} />
       <ul>
         {rankings?.map((rank, i) => (
-          <LeagueTableRow key={rank?.rankId} i={i} rank={rank} active={[4, 7]} tournamentName={tournamentName} />
+          <LeagueTableRow key={i} i={i} rank={rank} active={[4, 7]} tournamentName={tournamentName} />
         ))}
       </ul>
     </section>
@@ -268,7 +268,7 @@ const LeagueTableRow = ({ i, rank, active, tournamentName }: { i: number; rank: 
         <p className="font-bold">{i + 1}</p>
       </div>
       <div className="flex grow items-center gap-x-2.5 px-2.5">
-        {tournamentName !== 'NPFL' && <Image src={contestantFlag} alt="" width={24} height={24.32} />}
+        {tournamentName !== 'NPFL' && contestantFlag && <Image src={contestantFlag} alt="" width={24} height={24.32} />}
         <span>{rank?.contestantClubName}</span>
       </div>
       <div className="flex gap-x-1 px-3 lg:gap-x-10">

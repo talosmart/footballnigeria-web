@@ -65,7 +65,7 @@ interface Fixture {
 // Main Card Component
 // ----------------------
 export default function MatchPreviewCard({ filteredfixtures, title, type, detail, tournamentName }: MatchPreviewCardProps) {
-  console.log(filteredfixtures, 'filteredfixtures')
+ 
   const matchData = detail ? filteredfixtures : filteredfixtures?.slice(0, 4);
   return (
     <section className="font-lato rounded-md bg-white px-3 py-5 shadow-sm">
