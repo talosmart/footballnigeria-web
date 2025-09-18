@@ -3,7 +3,8 @@ import { useUserStore } from "@/store/userStore";
 
 export type Method = "POST" | "GET" | "DELETE" | "PUT" | "PATCH";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+export const THIRD_BASE_URL = process.env.NEXT_THIRD_PARTY_BASE_URL || "";
 
 // Base fetch utility
 const fetchFromApi = async <T>(
@@ -63,9 +64,9 @@ export const AuthorizedApiRequest = async <T>(
   data?: T,
 ) => {
   const token = useUserStore.getState().token ?? undefined;
-  if(!token){
-    return console.log('token')
-  }
+  // if(!token){
+  //   return console.log('token')
+  // }
 
   return await fetchFromApi<T>(url, method, data, token);
 };

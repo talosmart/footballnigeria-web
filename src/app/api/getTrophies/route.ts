@@ -1,3 +1,4 @@
+import { THIRD_BASE_URL } from "@/constant/api.config";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -13,7 +14,7 @@ export async function GET(req: Request) {
     }
 
     const res = await fetch(
-     `http://api.footballnigeria.com/trophies/${id}`, 
+     `${THIRD_BASE_URL}trophies/${id}`, 
     );
 
     if (!res.ok) {

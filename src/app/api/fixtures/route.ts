@@ -1,4 +1,5 @@
 // app/api/fixtures/route.ts
+import { THIRD_BASE_URL } from "@/constant/api.config";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
     }
 
     const res = await fetch(
-      `http://api.footballnigeria.com/fixtures/${id}`,
+      `${THIRD_BASE_URL}fixtures/${id}`,
       { cache: "no-store" }
     );
 

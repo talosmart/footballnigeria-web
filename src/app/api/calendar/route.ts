@@ -1,8 +1,9 @@
+import { THIRD_BASE_URL } from "@/constant/api.config";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const res = await fetch("http://api.footballnigeria.com/calendar", {
+    const res = await fetch(`${THIRD_BASE_URL}calendar`, {
       // You can add headers if required
       cache: "no-store", // prevent Next.js from caching the API response
     });
