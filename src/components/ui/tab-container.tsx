@@ -76,7 +76,7 @@ export default function TabContainer() {
         </div>
       ) : (
         <div className="mt-2.5 grid gap-x-2.5 gap-y-5 lg:mt-5 lg:grid-cols-3">
-               {leaguePolls?.map((poll) => (
+               {nationalPolls?.map((poll) => (
         <PredictionCard2 key={poll.id} poll={poll} />
       ))}
         </div>
