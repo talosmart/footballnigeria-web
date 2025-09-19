@@ -1,10 +1,11 @@
+import { BASE_URL } from "@/constant/api.config";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
    
     const res = await fetch(
-     `https://football.ogitechconsults.ng/public/api/v1/polls`, 
+     `${BASE_URL}polls`, 
     );
 
     if (!res.ok) {
